@@ -11,6 +11,8 @@ Their licences require these notices to be distributed with the app; they do not
 | [Space Grotesk](https://github.com/floriankarsten/space-grotesk), [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono), [Inter](https://github.com/rsms/inter) | App and website typefaces | SIL Open Font License 1.1 | `fonts/*-LICENSE.txt` inside the app |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp) | YouTube and other video sites | The Unlicense (public domain) | downloaded on first use; not bundled |
 
+The Android app has its own licence (GNU GPL v3, because it includes the GPL-3.0 library youtubedl-android) and notices: see [android/NOTICE.md](android/NOTICE.md).
+
 The app icon is an original drawing made by `scripts/make-icon.js`.
 
 ## Source code for the bundled FFmpeg (GPL)

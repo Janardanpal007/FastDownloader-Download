@@ -16,9 +16,12 @@
     deb: /\.deb$/i,
     'ext-chrome': /extension-chrome.*\.zip$/i,
     'ext-firefox': /extension-firefox.*\.(zip|xpi)$/i,
+    'android-arm64': /android-arm64\.apk$/i,
+    'android-universal': /android-universal\.apk$/i,
   };
 
   function detectOs() {
+    if (/android/i.test(navigator.userAgent)) return 'android';
     var p = ((navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || navigator.userAgent || '').toLowerCase();
     if (p.indexOf('win') >= 0) return 'windows';
     if (p.indexOf('mac') >= 0) return 'mac';
@@ -34,7 +37,7 @@
   var heroBtn = document.getElementById('hero-download');
   var heroLabel = document.getElementById('hero-label');
   var heroMeta = document.getElementById('hero-meta');
-  var names = { windows: 'Windows', mac: 'macOS', linux: 'Linux' };
+  var names = { windows: 'Windows', mac: 'macOS', linux: 'Linux', android: 'Android' };
   if (os) {
     heroLabel.textContent = 'Download for ' + names[os];
     var cards = document.querySelectorAll('.platform[data-os="' + os + '"]');
@@ -59,12 +62,13 @@
       var tags = document.querySelectorAll('.version');
       for (var j = 0; j < tags.length; j++) tags[j].textContent = 'v' + version;
     }
-    // Windows and Linux get a direct download from the main button; Macs pick their chip below.
-    var direct = os === 'windows' ? files.windows : os === 'linux' ? files.appimage : null;
+    // Windows, Linux and Android get a direct download from the main button; Macs pick their chip below.
+    var direct = { windows: files.windows, linux: files.appimage, android: files['android-arm64'] }[os];
+    var kind = { windows: 'For Windows · Installer (64-bit) · ', linux: 'For Linux · AppImage · ', android: 'For Android 8+ · APK · ' }[os];
     if (direct) {
       heroBtn.href = direct.browser_download_url;
       heroMeta.innerHTML = '';
-      heroMeta.textContent = (os === 'windows' ? 'For Windows · Installer (64-bit) · ' : 'For Linux · AppImage · ') + mb(direct.size) + ' · v' + version;
+      heroMeta.textContent = kind + mb(direct.size) + ' · v' + version;
     } else if (os === 'mac') {
       heroMeta.textContent = 'For macOS · Apple Silicon or Intel · v' + version;
     }
@@ -80,7 +84,7 @@
     });
 
   // Share buttons
-  var text = 'FastDownloader: a fast, private download manager for Windows, macOS and Linux';
+  var text = 'FastDownloader: a fast, private download manager for Windows, macOS, Linux and Android';
   var share = {
     x: 'https://x.com/intent/post?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(PAGE),
     whatsapp: 'https://wa.me/?text=' + encodeURIComponent(text + ' ' + PAGE),

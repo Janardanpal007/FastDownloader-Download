@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>FastDownloader: fast, private download manager for Windows, macOS and Linux</title>
-  <meta name="description" content="Multi-connection downloads, pause and resume, videos up to 4K, torrents, a browser extension and privacy built in. Free for Windows, macOS and Linux." />
+  <title>FastDownloader: fast, private download manager for Windows, macOS, Linux and Android</title>
+  <meta name="description" content="Multi-connection downloads, pause and resume, videos up to 4K, torrents, a browser extension and privacy built in. Free for Windows, macOS, Linux and Android." />
   <meta property="og:title" content="FastDownloader" />
-  <meta property="og:description" content="Every download. One fast app. Free for Windows, macOS and Linux." />
+  <meta property="og:description" content="Every download. One fast app. Free for Windows, macOS, Linux and Android." />
   <meta property="og:image" content="https://janardanpal007.github.io/FastDownloader-Download/images/main-window.png?v=1.1" />
   <meta name="theme-color" content="#0b0d12" />
   <link rel="icon" href="images/icon.png" />
@@ -35,7 +35,7 @@
       <div class="hero">
         <div class="hero-text">
           <h1>Every download.<br />One <em>fast</em> app.</h1>
-          <p class="lead">Split files into parallel parts, pause and resume any time, grab videos up to 4K, run torrents and catch links straight from your browser. No account, no ads, no tracking. Free for Windows, macOS and Linux.</p>
+          <p class="lead">Split files into parallel parts, pause and resume any time, grab videos up to 4K, run torrents and catch links straight from your browser. No account, no ads, no tracking. Free for Windows, macOS, Linux and Android.</p>
           <div class="cta-row">
             <a class="btn btn-solid" id="hero-download" href="#download">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 21h14"/></svg>
@@ -46,7 +46,7 @@
               All platforms
             </a>
           </div>
-          <div class="meta" id="hero-meta">Windows · macOS · Linux · <span class="version">v1.0.0</span></div>
+          <div class="meta" id="hero-meta">Windows · macOS · Linux · Android · <span class="version">v1.0.0</span></div>
           <div class="share" aria-label="Share">
             <span class="share-label">Share</span>
             <button type="button" id="copy-link"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="1"/><path d="M5 15V5a1 1 0 0 1 1-1h9"/></svg><span>Copy link</span></button>
@@ -152,6 +152,14 @@
           <a class="btn btn-line" data-asset="deb" href="https://github.com/Janardanpal007/FastDownloader-Download/releases/latest">Ubuntu / Debian .deb</a>
           <p class="size" data-size="appimage"></p>
         </article>
+        <article class="platform android" data-os="android">
+          <svg class="os" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M6 10h12v7.5a1.5 1.5 0 0 1-1.5 1.5H15v2.5a1.25 1.25 0 0 1-2.5 0V19h-1v2.5a1.25 1.25 0 0 1-2.5 0V19H7.5A1.5 1.5 0 0 1 6 17.5zM3.5 10a1.25 1.25 0 0 1 1.25 1.25v5a1.25 1.25 0 0 1-2.5 0v-5A1.25 1.25 0 0 1 3.5 10zm17 0a1.25 1.25 0 0 1 1.25 1.25v5a1.25 1.25 0 0 1-2.5 0v-5A1.25 1.25 0 0 1 20.5 10zM6 9a6 6 0 0 1 12 0zm3.5-3.25a.75.75 0 1 0 0 1.5.75.75 0 1 0 0-1.5zm5 0a.75.75 0 1 0 0 1.5.75.75 0 1 0 0-1.5z"/></svg>
+          <h3>Android</h3>
+          <p class="sub">Android 8.0 to 17 · phones and tablets</p>
+          <a class="btn btn-solid" data-asset="android-arm64" href="https://github.com/Janardanpal007/FastDownloader-Download/releases/latest">Download APK</a>
+          <a class="btn btn-line" data-asset="android-universal" href="https://github.com/Janardanpal007/FastDownloader-Download/releases/latest">Universal APK (any device)</a>
+          <p class="size" data-size="android-arm64"></p>
+        </article>
       </div>
       <div class="note-row">
         <span>Not sure which Mac? Apple menu → <b>About This Mac</b>: "Apple M…" means Apple Silicon.</span>
@@ -227,6 +235,14 @@
           <ol>
             <li>AppImage: <code>chmod +x FastDownloader-*.AppImage</code>, then open it.</li>
             <li>Ubuntu / Debian: <code>sudo apt install ./FastDownloader-*.deb</code></li>
+          </ol>
+        </details>
+        <details open>
+          <summary>Android</summary>
+          <ol>
+            <li>Download the APK on your phone and open it.</li>
+            <li>The first time, Android asks to allow installs from your browser: tap <b>Settings</b>, turn on <b>Allow from this source</b>, then <b>Install</b>.</li>
+            <li>To download a link from any app, tap <b>Share</b> and pick FastDownloader.</li>
           </ol>
         </details>
       </div>

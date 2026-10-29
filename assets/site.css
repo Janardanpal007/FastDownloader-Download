@@ -128,7 +128,7 @@ article p { color: var(--muted); margin: 0; font-size: 15px; }
 .shot.wide a { max-width: 720px; }
 
 /* ---------- Download ---------- */
-.platforms { grid-template-columns: repeat(4, 1fr); }
+.platforms { grid-template-columns: repeat(5, 1fr); }
 .platform { display: flex; flex-direction: column; gap: 10px; padding: 36px 28px; border-right: 1px solid var(--line); transition: background 0.2s; }
 .platform:last-child { border-right: 0; }
 .platform.mine { background: rgba(74, 168, 255, 0.06); box-shadow: inset 0 2px 0 var(--accent); }
@@ -157,7 +157,7 @@ article p { color: var(--muted); margin: 0; font-size: 15px; }
 .ticks li::before { content: ""; position: absolute; left: 0; top: 20px; width: 14px; height: 8px; border-left: 2px solid var(--accent); border-bottom: 2px solid var(--accent); transform: rotate(-45deg); }
 
 /* ---------- Install ---------- */
-.install { grid-template-columns: repeat(3, 1fr); }
+.install { grid-template-columns: repeat(4, 1fr); }
 .install details { padding: 28px; border-right: 1px solid var(--line); }
 .install details:last-child { border-right: 0; }
 .install summary { font: 700 22px var(--display); cursor: pointer; list-style: none; margin-bottom: 14px; }
@@ -184,6 +184,7 @@ article p { color: var(--muted); margin: 0; font-size: 15px; }
   .features, .platforms { grid-template-columns: repeat(2, 1fr); }
   .features article:nth-child(2n), .platform:nth-child(2n) { border-right: 0; }
   .platform { border-bottom: 1px solid var(--line); }
+  .platform.android { grid-column: 1 / -1; border-right: 0; }
   .install { grid-template-columns: 1fr; }
   .install details { border-right: 0; border-bottom: 1px solid var(--line); }
   .links { display: none; }

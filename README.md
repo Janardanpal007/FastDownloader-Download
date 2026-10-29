@@ -2,7 +2,7 @@
 
 <h1 align="center">FastDownloader</h1>
 
-<p align="center">A fast, modern download manager for <b>Windows, macOS and Linux</b>.<br>
+<p align="center">A fast, modern download manager for <b>Windows, macOS, Linux and Android</b>.<br>
 Multi-connection downloads · pause &amp; resume · videos from websites · torrents · browser extension · privacy built in</p>
 
 <p align="center">
@@ -21,6 +21,9 @@ Multi-connection downloads · pause &amp; resume · videos from websites · torr
 | **Mac with Intel** | `FastDownloader-1.1.0-x64.dmg` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.1.0-x64.dmg) |
 | **Linux** (any distribution) | `FastDownloader-1.1.0.AppImage` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.1.0.AppImage) |
 | **Linux** (Ubuntu / Debian) | `FastDownloader-1.1.0.deb` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.1.0.deb) |
+| **Android 8.0 – 17** (almost every phone) | `FastDownloader-1.1.0-android-arm64.apk` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.1.0-android-arm64.apk) |
+| **Android** (older 32-bit phones) | `FastDownloader-1.1.0-android-arm.apk` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.1.0-android-arm.apk) |
+| **Android** (any device, larger) | `FastDownloader-1.1.0-android-universal.apk` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.1.0-android-universal.apk) |
 | **Browser extension** (Chrome, Edge, Brave, Opera, Vivaldi) | `FastDownloader-Extension-Chrome-Edge-Opera-1.6.0.zip` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-Extension-Chrome-Edge-Opera-1.6.0.zip) |
 | **Browser extension** (Firefox) | `FastDownloader-Extension-Firefox-1.6.0.zip` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-Extension-Firefox-1.6.0.zip) |
 
@@ -59,6 +62,14 @@ Not sure which Mac you have? Apple menu  → **About This Mac**: "Chip: Apple M�
 ### Linux
 - **AppImage:** `chmod +x FastDownloader-1.1.0.AppImage`, then double-click it or run `./FastDownloader-1.1.0.AppImage`.
 - **Ubuntu / Debian:** `sudo apt install ./FastDownloader-1.1.0.deb`
+
+### Android
+1. Download the APK on your phone (arm64 for almost every phone; the universal one works everywhere) and open it.
+2. The first time, Android asks to allow installs from your browser: tap **Settings**, turn on **Allow from this source**, go back and tap **Install**.
+3. Open FastDownloader and allow notifications, so downloads can show progress in the background.
+4. To download a link from Chrome or any other app, tap **Share** and pick **FastDownloader**. The app's **Browser** tab finds videos on pages and blocks ads.
+
+Android 8 to 10 ask once for storage permission. Files are saved in `Download/FastDownloader/`.
 
 ### Browser extension
 **Chrome, Edge, Brave, Opera, Vivaldi**
@@ -100,9 +111,12 @@ Each release includes `SHA256SUMS.txt`. Compare it with the checksum of your fil
 ## Problems or ideas?
 
 Open an [issue](https://github.com/Janardanpal007/FastDownloader-Download/issues) and describe what happened,
-including your system (Windows / macOS / Linux version) and, if possible, a screenshot.
+including your system (Windows / macOS / Linux / Android version) and, if possible, a screenshot.
 
 ## Licence
 
-FastDownloader © 2026 Janardan/TSE. Released under the MIT licence ([LICENSE](LICENSE)).
+FastDownloader © 2026 Janardan/TSE. The desktop apps are released under the MIT licence ([LICENSE](LICENSE)).
+The **Android app** is free software under the **GNU GPL v3**, because it includes youtubedl-android (GPL-3.0);
+its complete source code is in [`android/`](android/), with its licence and notices in
+[android/LICENSE](android/LICENSE) and [android/NOTICE.md](android/NOTICE.md).
 It includes open-source components, listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
