@@ -8,16 +8,17 @@
   <meta property="og:title" content="FastDownloader" />
   <meta property="og:description" content="Every download, up to 8K video. One fast app. Free for Windows, macOS, Linux and Android." />
   <meta property="og:image" content="https://janardanpal007.github.io/FastDownloader-Download/images/main-window.png?v=1.1" />
-  <meta name="theme-color" content="#0b0d12" />
+  <meta name="theme-color" content="#f4f4f1" />
   <link rel="icon" href="images/icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/site.css?v=1.2" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/site.css?v=2.0" />
+  <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
 </head>
 <body>
   <header class="nav">
-    <a class="brand" href="#top" aria-label="FastDownloader home"><img src="images/icon.png" alt="" /><span>FastDownloader</span></a>
+    <a class="brand" href="#top" aria-label="FastDownloader home">[FastDownloader]</a>
     <nav class="links" aria-label="Sections">
       <a href="#features">Features</a>
       <a href="#download">Download</a>
@@ -25,26 +26,30 @@
       <a href="#privacy">Privacy</a>
       <a href="#install">Install</a>
     </nav>
-    <a class="nav-cta" href="#download">Download</a>
+    <a class="pill" href="#download"><span class="dot"></span><span class="version">v1.0.0</span> · Free</a>
   </header>
 
   <main id="top">
     <!-- 01 HERO -->
-    <section class="frame">
-      <div class="label"><span>01</span> / Download manager</div>
-      <div class="hero">
-        <div class="hero-text">
-          <h1>Every download.<br />One <em>fast</em> app.</h1>
-          <p class="lead">Split files into parallel parts, pause and resume any time, grab videos in up to 8K, run torrents and catch links straight from your browser. No account, no ads, no tracking. Free for Windows, macOS, Linux and Android.</p>
+    <section class="hero">
+      <div class="hero-top">
+        <p class="intro">A fast, private download manager. Parallel parts, pause and resume, 8K video, torrents and a browser extension. No account, no ads, no tracking.</p>
+        <ul class="facts">
+          <li>[Up to 8K video]</li>
+          <li>[32 connections per file]</li>
+          <li>[Windows · macOS · Linux · Android]</li>
+        </ul>
+      </div>
+      <div class="stage" aria-hidden="true"><canvas id="hero-3d"></canvas></div>
+      <div class="hero-bottom">
+        <h1>Every download.<br />One <em>fast</em> app.</h1>
+        <div class="hero-actions">
           <div class="cta-row">
             <a class="btn btn-solid" id="hero-download" href="#download">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 21h14"/></svg>
               <span id="hero-label">Download</span>
             </a>
-            <a class="btn btn-line" href="#download">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1"/><path d="M8 20h8M12 16v4"/></svg>
-              All platforms
-            </a>
+            <a class="btn btn-line" href="#download">All platforms</a>
           </div>
           <div class="meta" id="hero-meta">Windows · macOS · Linux · Android · <span class="version">v1.0.0</span></div>
           <div class="share" aria-label="Share">
@@ -57,6 +62,11 @@
           </div>
         </div>
       </div>
+      <a class="scroll" href="#preview">Scroll ↕</a>
+    </section>
+
+    <section class="frame" id="preview">
+      <div class="label"><span>01</span> / The app</div>
       <figure class="hero-shot">
         <a href="images/main-window.png?v=1.1" target="_blank" rel="noopener" title="Open full size">
           <img src="images/main-window.png?v=1.1" alt="FastDownloader main window downloading an ISO with 8 connections" width="1280" height="760" />
@@ -271,6 +281,9 @@
     <div class="copy">© 2026 Janardan/TSE</div>
   </footer>
 
-  <script src="assets/site.js?v=1.2"></script>
+  <a class="float-cta" href="#download"><img src="images/icon.png" alt="" /><span>Download</span></a>
+
+  <script src="assets/site.js?v=2.0"></script>
+  <script type="module" src="assets/hero3d.js?v=2.0"></script>
 </body>
 </html>

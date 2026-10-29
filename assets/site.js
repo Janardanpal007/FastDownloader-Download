@@ -94,6 +94,12 @@
   var shareLinks = document.querySelectorAll('[data-share]');
   for (var k = 0; k < shareLinks.length; k++) shareLinks[k].href = share[shareLinks[k].getAttribute('data-share')];
 
+  // Floating Download card appears once the hero has scrolled away.
+  var floatCta = document.querySelector('.float-cta');
+  function toggleFloat() { floatCta.classList.toggle('show', window.scrollY > window.innerHeight * 0.7); }
+  window.addEventListener('scroll', toggleFloat, { passive: true });
+  toggleFloat();
+
   var copy = document.getElementById('copy-link');
   copy.addEventListener('click', function () {
     var label = copy.querySelector('span');
