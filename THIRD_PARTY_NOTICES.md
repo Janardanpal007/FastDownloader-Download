@@ -8,6 +8,7 @@ Their licences require these notices to be distributed with the app; they do not
 | [Electron](https://www.electronjs.org/) (includes Chromium and Node.js) | App framework | MIT (Chromium: BSD and others) | `LICENSE.electron.txt`, `LICENSES.chromium.html` next to the app |
 | [WebTorrent](https://webtorrent.io/) and its dependencies | Torrent and magnet downloads | MIT | inside `resources/app.asar` (`node_modules/*/LICENSE`) |
 | [FFmpeg](https://ffmpeg.org/) via [ffmpeg-static](https://github.com/eugeneware/ffmpeg-static) (Windows, macOS) and [BtbN/FFmpeg-Builds](https://github.com/BtbN/FFmpeg-Builds) (Linux) | Joining and converting video streams | GPL v3 (FFmpeg builds), MIT/GPL (package) | next to the binary in `resources/app.asar.unpacked/node_modules/ffmpeg-static/` (`ffmpeg*.LICENSE`) |
+| [Space Grotesk](https://github.com/floriankarsten/space-grotesk), [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono), [Inter](https://github.com/rsms/inter) | App and website typefaces | SIL Open Font License 1.1 | `fonts/*-LICENSE.txt` inside the app |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp) | YouTube and other video sites | The Unlicense (public domain) | downloaded on first use; not bundled |
 
 The app icon is an original drawing made by `scripts/make-icon.js`.
