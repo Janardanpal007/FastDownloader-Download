@@ -8,17 +8,17 @@
   <meta property="og:title" content="FastDownloader" />
   <meta property="og:description" content="Every download, up to 8K video. One fast app. Free for Windows, macOS, Linux and Android." />
   <meta property="og:image" content="https://janardanpal007.github.io/FastDownloader-Download/images/main-window.png?v=1.1" />
-  <meta name="theme-color" content="#f4f4f1" />
+  <meta name="theme-color" content="#000000" />
   <link rel="icon" href="images/icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/site.css?v=2.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/site.css?v=3.0" />
   <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
 </head>
 <body>
   <header class="nav">
-    <a class="brand" href="#top" aria-label="FastDownloader home">[FastDownloader]</a>
+    <a class="brand" href="#top" aria-label="FastDownloader home"><img src="images/icon.png" alt="" /><span>FastDownloader</span></a>
     <nav class="links" aria-label="Sections">
       <a href="#features">Features</a>
       <a href="#download">Download</a>
@@ -26,24 +26,21 @@
       <a href="#privacy">Privacy</a>
       <a href="#install">Install</a>
     </nav>
-    <a class="pill" href="#download"><span class="dot"></span><span class="version">v1.0.0</span> · Free</a>
+    <div class="nav-pills"><a class="pill pill-solid" href="#download">Free&nbsp;·&nbsp;<span class="version">v1.0.0</span></a><a class="pill pill-line" href="#download">Get the app</a></div>
   </header>
 
   <main id="top">
     <!-- 01 HERO -->
     <section class="hero">
-      <div class="hero-top">
-        <p class="intro">A fast, private download manager. Parallel parts, pause and resume, 8K video, torrents and a browser extension. No account, no ads, no tracking.</p>
-        <ul class="facts">
-          <li>[Up to 8K video]</li>
-          <li>[32 connections per file]</li>
-          <li>[Windows · macOS · Linux · Android]</li>
-        </ul>
+      <div class="stage" aria-hidden="true">
+        <span class="neon n1"></span><span class="neon n2"></span><span class="neon n3"></span>
+        <span class="floor"></span>
+        <canvas id="hero-3d"></canvas>
       </div>
-      <div class="stage" aria-hidden="true"><canvas id="hero-3d"></canvas></div>
       <div class="hero-bottom">
-        <h1>Every download.<br />One <em>fast</em> app.</h1>
+        <h1>Every download.<br /><em>One fast</em> app.</h1>
         <div class="hero-actions">
+          <p class="hero-lede">Split files into parallel parts, grab video in up to 8K, run torrents and catch links straight from your browser. No account, no ads, no tracking.</p>
           <div class="cta-row">
             <a class="btn btn-solid" id="hero-download" href="#download">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 21h14"/></svg>
@@ -62,21 +59,26 @@
           </div>
         </div>
       </div>
-      <a class="scroll" href="#preview">Scroll ↕</a>
     </section>
 
     <section class="frame" id="preview">
-      <div class="label"><span>01</span> / The app</div>
+      <header class="sec-head"><div class="label"><span>01</span> / The app</div><p class="lede">One window for every download: files, videos and torrents, each split into parallel parts.</p></header>
       <figure class="hero-shot">
         <a href="images/main-window.png?v=1.1" target="_blank" rel="noopener" title="Open full size">
           <img src="images/main-window.png?v=1.1" alt="FastDownloader main window downloading an ISO with 8 connections" width="1280" height="760" />
         </a>
       </figure>
+      <div class="marquee" aria-hidden="true">
+        <div class="track">
+          <span>→ Videos in up to 8K</span><span>→ 32 connections per file</span><span>→ Pause and resume</span><span>→ Torrents</span><span>→ No ads, no tracking</span>
+          <span>→ Videos in up to 8K</span><span>→ 32 connections per file</span><span>→ Pause and resume</span><span>→ Torrents</span><span>→ No ads, no tracking</span>
+        </div>
+      </div>
     </section>
 
     <!-- 02 FEATURES -->
     <section class="frame" id="features">
-      <div class="label"><span>02</span> / What it does</div>
+      <header class="sec-head"><div class="label"><span>02</span> / What it does</div><p class="lede">From huge ISOs to 8K video, a full set of tools built for downloading at full speed.</p></header>
       <div class="grid features">
         <article>
           <div class="num">01</div>
@@ -131,7 +133,7 @@
 
     <!-- 03 DOWNLOAD -->
     <section class="frame" id="download">
-      <div class="label"><span>03</span> / Download <span class="version-chip version">v1.0.0</span></div>
+      <header class="sec-head"><div class="label"><span>03</span> / Download <span class="version-chip version">v1.0.0</span></div><p class="lede">Free for every major system. Pick yours and you're downloading in a minute.</p></header>
       <div class="grid platforms">
         <article class="platform" data-os="windows">
           <svg class="os" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5 10.5 4.4v7.1H3zM11.6 4.2 21 3v8.5h-9.4zM3 12.6h7.5v7.1L3 18.6zM11.6 12.6H21V21l-9.4-1.3z"/></svg>
@@ -232,7 +234,7 @@
 
     <!-- 06 INSTALL -->
     <section class="frame" id="install">
-      <div class="label"><span>06</span> / Install</div>
+      <header class="sec-head"><div class="label"><span>06</span> / Install</div><p class="lede">Four platforms, a few quick steps each.</p></header>
       <div class="grid install">
         <details open>
           <summary>Windows</summary>
@@ -283,7 +285,7 @@
 
   <a class="float-cta" href="#download"><img src="images/icon.png" alt="" /><span>Download</span></a>
 
-  <script src="assets/site.js?v=2.0"></script>
-  <script type="module" src="assets/hero3d.js?v=2.0"></script>
+  <script src="assets/site.js?v=3.0"></script>
+  <script type="module" src="assets/hero3d.js?v=3.0"></script>
 </body>
 </html>

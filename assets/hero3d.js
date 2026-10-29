@@ -1,5 +1,5 @@
-// FastDownloader hero: a glossy black "pixel" download arrow that turns slowly
-// and leans toward the pointer. Falls back to nothing if WebGL is unavailable.
+// FastDownloader hero: a glossy black "pixel" download arrow, lit red from behind
+// like a car in a studio, that turns slowly and leans toward the pointer. Falls back to nothing if WebGL is unavailable.
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
@@ -47,20 +47,31 @@ function start() {
   const scene = new THREE.Scene();
   const pmrem = new THREE.PMREMGenerator(renderer);
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  scene.environmentIntensity = 0.35;
 
   const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
   camera.position.set(0, 0, 22);
 
   const material = new THREE.MeshPhysicalMaterial({
-    color: 0x080808, metalness: 0.2, roughness: 0.22, clearcoat: 1, clearcoatRoughness: 0.06, envMapIntensity: 1.3,
+    color: 0x070707, metalness: 0.35, roughness: 0.2, clearcoat: 1, clearcoatRoughness: 0.05,
   });
   const arrow = new THREE.Mesh(buildArrow(), material);
   arrow.rotation.set(0.25, -0.6, 0.05);
   scene.add(arrow);
 
-  const key = new THREE.DirectionalLight(0xffffff, 1.2);
-  key.position.set(4, 6, 8);
+  // White strip lights above, red glow behind and below for the rim highlights.
+  const key = new THREE.DirectionalLight(0xffffff, 0.9);
+  key.position.set(2, 8, 6);
   scene.add(key);
+  const back = new THREE.PointLight(0xff2d1f, 260, 40);
+  back.position.set(0, 2, -6);
+  scene.add(back);
+  const left = new THREE.PointLight(0xff3a20, 120, 30);
+  left.position.set(-7, -2, 3);
+  scene.add(left);
+  const right = new THREE.PointLight(0xff3a20, 120, 30);
+  right.position.set(7, -2, 3);
+  scene.add(right);
 
   function resize() {
     const w = canvas.clientWidth, h = canvas.clientHeight;

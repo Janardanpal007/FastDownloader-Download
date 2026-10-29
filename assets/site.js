@@ -94,9 +94,13 @@
   var shareLinks = document.querySelectorAll('[data-share]');
   for (var k = 0; k < shareLinks.length; k++) shareLinks[k].href = share[shareLinks[k].getAttribute('data-share')];
 
-  // Floating Download card appears once the hero has scrolled away.
+  // Floating Download pill appears once the hero has scrolled away; the nav gets a backdrop.
   var floatCta = document.querySelector('.float-cta');
-  function toggleFloat() { floatCta.classList.toggle('show', window.scrollY > window.innerHeight * 0.7); }
+  var nav = document.querySelector('.nav');
+  function toggleFloat() {
+    floatCta.classList.toggle('show', window.scrollY > window.innerHeight * 0.7);
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  }
   window.addEventListener('scroll', toggleFloat, { passive: true });
   toggleFloat();
 
