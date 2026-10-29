@@ -16,11 +16,11 @@ Multi-connection downloads · pause &amp; resume · videos from websites · torr
 
 | System | File | |
 |---|---|---|
-| **Windows 10 / 11** | `FastDownloader-Setup-1.0.0.exe` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-Setup-1.0.0.exe) |
-| **Mac with Apple Silicon** (M1–M4) | `FastDownloader-1.0.0-arm64.dmg` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.0.0-arm64.dmg) |
-| **Mac with Intel** | `FastDownloader-1.0.0-x64.dmg` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.0.0-x64.dmg) |
-| **Linux** (any distribution) | `FastDownloader-1.0.0.AppImage` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.0.0.AppImage) |
-| **Linux** (Ubuntu / Debian) | `FastDownloader-1.0.0.deb` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.0.0.deb) |
+| **Windows 10 / 11** | `FastDownloader-Setup-1.1.0.exe` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-Setup-1.1.0.exe) |
+| **Mac with Apple Silicon** (M1–M4) | `FastDownloader-1.1.0-arm64.dmg` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.1.0-arm64.dmg) |
+| **Mac with Intel** | `FastDownloader-1.1.0-x64.dmg` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.1.0-x64.dmg) |
+| **Linux** (any distribution) | `FastDownloader-1.1.0.AppImage` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.1.0.AppImage) |
+| **Linux** (Ubuntu / Debian) | `FastDownloader-1.1.0.deb` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.1.0.deb) |
 | **Browser extension** (Chrome, Edge, Brave, Opera, Vivaldi) | `FastDownloader-Extension-Chrome-Edge-Opera-1.6.0.zip` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-Extension-Chrome-Edge-Opera-1.6.0.zip) |
 | **Browser extension** (Firefox) | `FastDownloader-Extension-Firefox-1.6.0.zip` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-Extension-Firefox-1.6.0.zip) |
 
@@ -40,7 +40,7 @@ Not sure which Mac you have? Apple menu  → **About This Mac**: "Chip: Apple M�
 ## Installing
 
 ### Windows
-1. Run `FastDownloader-Setup-1.0.0.exe`.
+1. Run `FastDownloader-Setup-1.1.0.exe`.
 2. If Windows shows **"Windows protected your PC"**, click **More info → Run anyway**. This appears because the app isn't code-signed yet; it isn't a virus warning.
 3. Follow the installer. FastDownloader starts and sits in the system tray (next to the clock).
 
@@ -57,8 +57,8 @@ Not sure which Mac you have? Apple menu  → **About This Mac**: "Chip: Apple M�
 4. The FastDownloader icon appears in the **menu bar** at the top right.
 
 ### Linux
-- **AppImage:** `chmod +x FastDownloader-1.0.0.AppImage`, then double-click it or run `./FastDownloader-1.0.0.AppImage`.
-- **Ubuntu / Debian:** `sudo apt install ./FastDownloader-1.0.0.deb`
+- **AppImage:** `chmod +x FastDownloader-1.1.0.AppImage`, then double-click it or run `./FastDownloader-1.1.0.AppImage`.
+- **Ubuntu / Debian:** `sudo apt install ./FastDownloader-1.1.0.deb`
 
 ### Browser extension
 **Chrome, Edge, Brave, Opera, Vivaldi**
@@ -94,8 +94,8 @@ illegal in most countries. DRM-protected services (Netflix, Prime Video, Disney+
 
 Each release includes `SHA256SUMS.txt`. Compare it with the checksum of your file:
 
-- **Windows (PowerShell):** `Get-FileHash .\FastDownloader-Setup-1.0.0.exe -Algorithm SHA256`
-- **macOS / Linux:** `shasum -a 256 FastDownloader-1.0.0-arm64.dmg`
+- **Windows (PowerShell):** `Get-FileHash .\FastDownloader-Setup-1.1.0.exe -Algorithm SHA256`
+- **macOS / Linux:** `shasum -a 256 FastDownloader-1.1.0-arm64.dmg`
 
 ## Problems or ideas?
 
