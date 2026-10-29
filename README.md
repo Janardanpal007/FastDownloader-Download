@@ -5,7 +5,10 @@
 <p align="center">A fast, modern download manager for <b>Windows, macOS and Linux</b>.<br>
 Multi-connection downloads · pause &amp; resume · videos from websites · torrents · browser extension · privacy built in</p>
 
-<p align="center"><a href="https://github.com/Janardanpal007/FastDownloader-Download/releases/latest"><b>⬇ Download the latest version</b></a></p>
+<p align="center">
+  <a href="https://janardanpal007.github.io/FastDownloader-Download/"><b>🌐 Website</b></a> &nbsp;·&nbsp;
+  <a href="https://github.com/Janardanpal007/FastDownloader-Download/releases/latest"><b>⬇ Download the latest version</b></a>
+</p>
 
 ![FastDownloader main window](images/main-window.png)
 

@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FastDownloader: fast, private download manager for Windows, macOS and Linux</title>
+  <meta name="description" content="Multi-connection downloads, pause and resume, videos up to 4K, torrents, a browser extension and privacy built in. Free for Windows, macOS and Linux." />
+  <meta property="og:title" content="FastDownloader" />
+  <meta property="og:description" content="Every download. One fast app. Free for Windows, macOS and Linux." />
+  <meta property="og:image" content="https://janardanpal007.github.io/FastDownloader-Download/images/main-window.png" />
+  <meta name="theme-color" content="#0b0d12" />
+  <link rel="icon" href="images/icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/site.css" />
+</head>
+<body>
+  <header class="nav">
+    <a class="brand" href="#top" aria-label="FastDownloader home"><img src="images/icon.png" alt="" /><span>FastDownloader</span></a>
+    <nav class="links" aria-label="Sections">
+      <a href="#features">Features</a>
+      <a href="#download">Download</a>
+      <a href="#extension">Extension</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#install">Install</a>
+    </nav>
+    <a class="nav-cta" href="#download">Download</a>
+  </header>
+
+  <main id="top">
+    <!-- 01 HERO -->
+    <section class="frame">
+      <div class="label"><span>01</span> / Download manager</div>
+      <div class="hero">
+        <div class="hero-text">
+          <h1>Every download.<br />One <em>fast</em> app.</h1>
+          <p class="lead">Split files into parallel parts, pause and resume any time, grab videos up to 4K, run torrents and catch links straight from your browser. No account, no ads, no tracking. Free for Windows, macOS and Linux.</p>
+          <div class="cta-row">
+            <a class="btn btn-solid" id="hero-download" href="#download">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 21h14"/></svg>
+              <span id="hero-label">Download</span>
+            </a>
+            <a class="btn btn-line" href="#download">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1"/><path d="M8 20h8M12 16v4"/></svg>
+              All platforms
+            </a>
+          </div>
+          <div class="meta" id="hero-meta">Windows · macOS · Linux · <span class="version">v1.0.0</span></div>
+          <div class="share" aria-label="Share">
+            <span class="share-label">Share</span>
+            <button type="button" id="copy-link"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="1"/><path d="M5 15V5a1 1 0 0 1 1-1h9"/></svg><span>Copy link</span></button>
+            <a data-share="x" href="#" target="_blank" rel="noopener">X</a>
+            <a data-share="whatsapp" href="#" target="_blank" rel="noopener">WhatsApp</a>
+            <a data-share="reddit" href="#" target="_blank" rel="noopener">Reddit</a>
+            <a data-share="linkedin" href="#" target="_blank" rel="noopener">LinkedIn</a>
+          </div>
+        </div>
+        <figure class="hero-shot">
+          <img src="images/main-window.png" alt="FastDownloader main window downloading an ISO with 8 connections" width="1164" height="681" />
+        </figure>
+      </div>
+    </section>
+
+    <!-- 02 FEATURES -->
+    <section class="frame" id="features">
+      <div class="label"><span>02</span> / What it does</div>
+      <div class="grid features">
+        <article>
+          <div class="num">01</div>
+          <h3>Multi-connection</h3>
+          <p>Each file is split into up to 32 parts downloaded at once, so you use your full connection.</p>
+        </article>
+        <article>
+          <div class="num">02</div>
+          <h3>Pause &amp; resume</h3>
+          <p>Stop any time and continue later, even after closing the app or restarting the computer.</p>
+        </article>
+        <article>
+          <div class="num">03</div>
+          <h3>Videos up to 4K</h3>
+          <p>YouTube, Vimeo, X, Instagram, TikTok and more, plus HLS and DASH streams. MP4, MKV or audio-only.</p>
+        </article>
+        <article>
+          <div class="num">04</div>
+          <h3>Torrents</h3>
+          <p>Magnet links and .torrent files with up to 150 peer connections and extra public trackers.</p>
+        </article>
+        <article>
+          <div class="num">05</div>
+          <h3>Browser extension</h3>
+          <p>A Download button on every video, right-click "Download with FastDownloader", and an ad &amp; tracker blocker.</p>
+        </article>
+        <article>
+          <div class="num">06</div>
+          <h3>Sorted for you</h3>
+          <p>Files land in ZIP, DOC, Programs, Videos, Music and Torrent folders automatically.</p>
+        </article>
+        <article>
+          <div class="num">07</div>
+          <h3>Queue &amp; limiter</h3>
+          <p>Choose how many run at once and cap the speed so browsing stays smooth.</p>
+        </article>
+        <article>
+          <div class="num">08</div>
+          <h3>Private by design</h3>
+          <p>No account, no analytics. Optional proxy or Tor, and a VPN kill switch for torrents.</p>
+        </article>
+      </div>
+      <div class="split">
+        <figure class="shot"><img src="images/video-dialog.png" alt="Add download dialog for a video stream with format choice" loading="lazy" width="1164" height="681" /></figure>
+        <div class="split-text">
+          <div class="kicker">Videos</div>
+          <h2>Pick the quality.<br />We do the rest.</h2>
+          <p>Paste a link or press the Download button on a playing video. FastDownloader lists every resolution with its real size, fetches the parts in parallel and hands you one clean MP4 or MKV file, with no re-encoding and no quality loss.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 DOWNLOAD -->
+    <section class="frame" id="download">
+      <div class="label"><span>03</span> / Download <span class="version-chip version">v1.0.0</span></div>
+      <div class="grid platforms">
+        <article class="platform" data-os="windows">
+          <svg class="os" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5 10.5 4.4v7.1H3zM11.6 4.2 21 3v8.5h-9.4zM3 12.6h7.5v7.1L3 18.6zM11.6 12.6H21V21l-9.4-1.3z"/></svg>
+          <h3>Windows</h3>
+          <p class="sub">Windows 10 and 11 · 64-bit installer</p>
+          <a class="btn btn-solid" data-asset="windows" href="https://github.com/Janardanpal007/FastDownloader-Download/releases/latest">Download .exe</a>
+          <p class="size" data-size="windows"></p>
+        </article>
+        <article class="platform" data-os="mac">
+          <svg class="os" viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 12.6c0-2.3 1.9-3.4 2-3.5a4.3 4.3 0 0 0-3.4-1.8c-1.4-.2-2.8.8-3.5.8s-1.8-.8-3-.8a4.5 4.5 0 0 0-3.8 2.3c-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.4 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7 2-1.1 2.8-2.3a9.6 9.6 0 0 0 1.3-2.6 4 4 0 0 1-2.5-3.7zM14.1 5.8A4 4 0 0 0 15 3a4.1 4.1 0 0 0-2.7 1.4 3.8 3.8 0 0 0-1 2.7 3.4 3.4 0 0 0 2.8-1.3z"/></svg>
+          <h3>macOS · Apple Silicon</h3>
+          <p class="sub">Macs with M1, M2, M3, M4</p>
+          <a class="btn btn-solid" data-asset="mac-arm" href="https://github.com/Janardanpal007/FastDownloader-Download/releases/latest">Download .dmg</a>
+          <p class="size" data-size="mac-arm"></p>
+        </article>
+        <article class="platform" data-os="mac">
+          <svg class="os" viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 12.6c0-2.3 1.9-3.4 2-3.5a4.3 4.3 0 0 0-3.4-1.8c-1.4-.2-2.8.8-3.5.8s-1.8-.8-3-.8a4.5 4.5 0 0 0-3.8 2.3c-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.4 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7 2-1.1 2.8-2.3a9.6 9.6 0 0 0 1.3-2.6 4 4 0 0 1-2.5-3.7zM14.1 5.8A4 4 0 0 0 15 3a4.1 4.1 0 0 0-2.7 1.4 3.8 3.8 0 0 0-1 2.7 3.4 3.4 0 0 0 2.8-1.3z"/></svg>
+          <h3>macOS · Intel</h3>
+          <p class="sub">Older Macs with an Intel processor</p>
+          <a class="btn btn-line" data-asset="mac-intel" href="https://github.com/Janardanpal007/FastDownloader-Download/releases/latest">Download .dmg</a>
+          <p class="size" data-size="mac-intel"></p>
+        </article>
+        <article class="platform" data-os="linux">
+          <svg class="os" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c-2.2 0-3.5 1.9-3.5 4.6 0 1.4.4 2.4-.6 4-1.3 2-3.4 4.6-2.6 7 .5 1.5 2 1.8 3 2.6.9.8 1.5 1.8 3.7 1.8s2.8-1 3.7-1.8c1-.8 2.5-1.1 3-2.6.8-2.4-1.3-5-2.6-7-1-1.6-.6-2.6-.6-4C15.5 3.9 14.2 2 12 2zm-1.5 4.5a.8.8 0 1 1 0 1.6.8.8 0 0 1 0-1.6zm3 0a.8.8 0 1 1 0 1.6.8.8 0 0 1 0-1.6zM12 9.2c.9 0 1.8.5 1.8.9s-.9 1-1.8 1-1.8-.6-1.8-1 .9-.9 1.8-.9z"/></svg>
+          <h3>Linux</h3>
+          <p class="sub">AppImage runs on any distribution</p>
+          <a class="btn btn-solid" data-asset="appimage" href="https://github.com/Janardanpal007/FastDownloader-Download/releases/latest">Download AppImage</a>
+          <a class="btn btn-line" data-asset="deb" href="https://github.com/Janardanpal007/FastDownloader-Download/releases/latest">Ubuntu / Debian .deb</a>
+          <p class="size" data-size="appimage"></p>
+        </article>
+      </div>
+      <div class="note-row">
+        <span>Not sure which Mac? Apple menu → <b>About This Mac</b>: "Apple M…" means Apple Silicon.</span>
+        <a href="https://github.com/Janardanpal007/FastDownloader-Download/releases/latest" id="all-files">All files &amp; checksums →</a>
+      </div>
+    </section>
+
+    <!-- 04 EXTENSION -->
+    <section class="frame" id="extension">
+      <div class="label"><span>04</span> / Browser extension</div>
+      <div class="split reverse">
+        <div class="split-text">
+          <h2>Works where<br />you <em>browse</em>.</h2>
+          <p>One extension for every major browser. It adds a Download button to videos with a quality menu, sends links to FastDownloader with a right-click, and blocks well-known ad and tracking networks along the way.</p>
+          <div class="chips">
+            <span>Chrome</span><span>Edge</span><span>Brave</span><span>Opera</span><span>Vivaldi</span><span>Firefox</span>
+          </div>
+          <div class="cta-row">
+            <a class="btn btn-solid" data-asset="ext-chrome" href="https://github.com/Janardanpal007/FastDownloader-Download/releases/latest">Chrome · Edge · Brave · Opera</a>
+            <a class="btn btn-line" data-asset="ext-firefox" href="https://github.com/Janardanpal007/FastDownloader-Download/releases/latest">Firefox</a>
+          </div>
+        </div>
+        <ol class="steps">
+          <li><b>Unzip</b> the extension into a folder you keep.</li>
+          <li>Open <code>chrome://extensions</code> (or <code>edge://</code>, <code>brave://</code>, <code>opera://</code>) and switch on <b>Developer mode</b>.</li>
+          <li>Click <b>Load unpacked</b>, choose the folder, then <b>pin</b> it from the puzzle-piece menu.</li>
+          <li>Shortcut: in FastDownloader click the <b>puzzle icon → Add to …</b> and it does steps 1–2 for you.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- 05 PRIVACY -->
+    <section class="frame" id="privacy">
+      <div class="label"><span>05</span> / Privacy</div>
+      <div class="split">
+        <div class="split-text">
+          <h2>No account.<br />No analytics.<br /><em>No ads.</em></h2>
+          <p>FastDownloader only talks to the sites you download from. Nothing about you or your files is collected.</p>
+        </div>
+        <ul class="ticks">
+          <li><b>Hide your IP</b> with Tor or any SOCKS5/HTTP proxy. If the proxy fails, downloads stop instead of leaking your real address.</li>
+          <li><b>VPN kill switch</b> for torrents: they only run while your VPN is connected.</li>
+          <li><b>Do Not Track</b> and Global Privacy Control sent with every request.</li>
+          <li><b>Tracking tags removed</b> from links (utm_, fbclid, gclid…).</li>
+          <li><b>History your way</b>: clear it any time, or don't keep it at all.</li>
+        </ul>
+      </div>
+      <figure class="shot wide"><img src="images/privacy.png" alt="Privacy settings with proxy, Tor and tracking options" loading="lazy" width="1164" height="681" /></figure>
+    </section>
+
+    <!-- 06 INSTALL -->
+    <section class="frame" id="install">
+      <div class="label"><span>06</span> / Install</div>
+      <div class="grid install">
+        <details open>
+          <summary>Windows</summary>
+          <ol>
+            <li>Run <code>FastDownloader-Setup-1.0.0.exe</code>.</li>
+            <li>If you see "Windows protected your PC", click <b>More info → Run anyway</b>. The app isn't code-signed yet; this isn't a virus warning.</li>
+            <li>FastDownloader lives in the tray next to the clock.</li>
+          </ol>
+        </details>
+        <details open>
+          <summary>macOS</summary>
+          <ol>
+            <li>Open the <code>.dmg</code> and drag FastDownloader into <b>Applications</b>.</li>
+            <li>First launch: <b>System Settings → Privacy &amp; Security → Open Anyway</b>.</li>
+            <li>If macOS says the app "is damaged", run <code>xattr -dr com.apple.quarantine /Applications/FastDownloader.app</code> in Terminal.</li>
+          </ol>
+        </details>
+        <details open>
+          <summary>Linux</summary>
+          <ol>
+            <li>AppImage: <code>chmod +x FastDownloader-*.AppImage</code>, then open it.</li>
+            <li>Ubuntu / Debian: <code>sudo apt install ./FastDownloader-*.deb</code></li>
+          </ol>
+        </details>
+      </div>
+      <p class="fine">Please download only what you have the right to. Many video sites' terms (YouTube's included) don't allow downloading, and DRM-protected services aren't supported.</p>
+    </section>
+  </main>
+
+  <footer class="frame footer">
+    <div class="foot-brand"><img src="images/icon.png" alt="" /> FastDownloader</div>
+    <div class="foot-links">
+      <a href="https://github.com/Janardanpal007/FastDownloader-Download/releases">Releases</a>
+      <a href="https://github.com/Janardanpal007/FastDownloader-Download/issues">Report a problem</a>
+      <a href="https://github.com/Janardanpal007/FastDownloader-Download/blob/main/THIRD_PARTY_NOTICES.md">Open-source notices</a>
+      <a href="https://github.com/Janardanpal007/FastDownloader-Download/blob/main/LICENSE">MIT licence</a>
+    </div>
+    <div class="copy">© 2026 Janardan/TSE</div>
+  </footer>
+
+  <script src="assets/site.js"></script>
+</body>
+</html>
