@@ -10,10 +10,10 @@ The Android version of FastDownloader. It runs on **Android 8.0 (API 26) through
 - **Sorted folders**: files are saved in `Download/FastDownloader/`, in ZIP, DOC, Programs, Videos, Music, Torrent, Images and Other folders.
 - **Video sites**: YouTube and 1,000+ other sites, through yt-dlp. You pick the quality (up to 8K), MP4 or MKV, or audio only as M4A or MP3. HLS and DASH streams work too.
 - **Torrents**: magnet links and .torrent files (libtorrent), with optional extra public trackers.
-- **Built-in browser**:
-  - finds the videos and audio a page loads;
-  - catches download links;
-  - blocks ads and trackers, using the same list as the browser extension;
+- **Built-in browser** (opens YouTube):
+  - puts a **Download** button on every video playing on a page, and counts the videos it finds;
+  - lists the video and audio files a page loads, and catches download links;
+  - blocks ads and trackers with **uBlock Origin's filter lists** (uBlock filters, EasyList, EasyPrivacy, Peter Lowe's list): blocked requests, hidden ad boxes and blocked pop-ups. The lists update every few days, and the shield button turns blocking off for one site;
   - signing in to a site there lets you download that site's videos that need an account.
 - **Getting links in**:
   - tap **Share** on a link in any app and pick FastDownloader;

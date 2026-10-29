@@ -20,6 +20,9 @@ The Android app is licensed under the GPL because it includes youtubedl-android,
 | [Kotlin](https://kotlinlang.org/), [kotlinx.coroutines](https://github.com/Kotlin/kotlinx.coroutines), [kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization) | Language and libraries | Apache-2.0 |
 | [AndroidX and Jetpack Compose](https://developer.android.com/jetpack/androidx) | Screens and Android integration | Apache-2.0 |
 | [Material Icons](https://github.com/google/material-design-icons) (path data) | Icons | Apache-2.0 |
+| [uBlock Origin filter lists](https://github.com/uBlockOrigin/uAssets) (uBlock filters, uBlock filters: Privacy) | Ad and tracker blocking in the browser (bundled, updated in the background) | GPL-3.0 |
+| [EasyList and EasyPrivacy](https://easylist.to/) | Ad and tracker blocking in the browser (bundled, updated in the background) | GPL-3.0 or CC BY-SA 3.0 |
+| [Peter Lowe's ad and tracking server list](https://pgl.yoyo.org/adservers/) | Ad and tracker blocking (downloaded from its site, not bundled) | see its [policy](https://pgl.yoyo.org/adservers/policy.php) |
 | [Space Grotesk](https://github.com/floriankarsten/space-grotesk), [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono), [Inter](https://github.com/rsms/inter) | Typefaces | SIL Open Font License 1.1 |
 
-The app icon is an original drawing made by `scripts/make-icon.js`. The ad and tracker list is FastDownloader's own (shared with the browser extension).
+The app icon is an original drawing made by `scripts/make-icon.js`. The ad blocker reads the filter lists itself (FastDownloader's own engine, in the uBlock Origin / Adblock Plus filter syntax); uBlock Origin's code is not included. FastDownloader's own short tracker list is shared with the browser extension.

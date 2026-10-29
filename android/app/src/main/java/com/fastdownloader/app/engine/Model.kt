@@ -71,6 +71,8 @@ data class Settings(
     val privacyHeaders: Boolean = true,
     val stripTracking: Boolean = true,
     val blockAds: Boolean = true,
+    /** Sites where the user turned ad blocking off (the browser's shield button). */
+    val adblockAllow: List<String> = emptyList(),
     val keepHistory: Boolean = true,
     val userName: String = "",
 ) {

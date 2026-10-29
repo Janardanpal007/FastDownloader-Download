@@ -20,6 +20,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,6 +35,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.fastdownloader.app.BuildConfig
 import com.fastdownloader.app.engine.Engine
+import com.fastdownloader.app.engine.Filters
 import com.fastdownloader.app.engine.Net
 import com.fastdownloader.app.engine.Settings
 import com.fastdownloader.app.engine.Ytdlp
@@ -120,7 +122,8 @@ fun SettingsScreen() {
             Divider()
             Toggle("Ask sites not to track", "Sends Do Not Track and Global Privacy Control", s.privacyHeaders) { v -> set { it.copy(privacyHeaders = v) } }
             Toggle("Remove tracking tags from links", "utm_source, fbclid, gclid and others", s.stripTracking) { v -> set { it.copy(stripTracking = v) } }
-            Toggle("Block ads and trackers", "In the Browser tab", s.blockAds) { v -> set { it.copy(blockAds = v) } }
+            Toggle("Block ads and trackers", "In the Browser tab, with uBlock Origin's filter lists", s.blockAds) { v -> set { it.copy(blockAds = v) } }
+            FilterLists(s.adblockAllow) { set { it.copy(adblockAllow = emptyList()) } }
             Toggle("Keep download history", "Off: finished downloads leave the list (files stay)", s.keepHistory) { v -> set { it.copy(keepHistory = v) } }
             Row(Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 LineButton("Clear history") { Engine.clearHistory() }
@@ -151,6 +154,39 @@ fun SettingsScreen() {
         }
         Spacer(Modifier.height(24.dp))
     }
+}
+
+/** uBlock Origin's lists: how many rules are loaded, when they were updated, and an Update button. */
+@Composable
+private fun FilterLists(allowedSites: List<String>, onClearAllowed: () -> Unit) {
+    val c = colors
+    val ctx = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val st by Filters.status.collectAsState()
+    LaunchedEffect(Unit) { if (Filters.engine == null) withContext(Dispatchers.IO) { runCatching { Filters.load(ctx) } } }
+    Column(Modifier.fillMaxWidth().padding(16.dp)) {
+        Text("Filter lists", style = Type.strong, color = c.text)
+        Text(Filters.LISTS.joinToString(", ") { it.name }, style = Type.small, color = c.muted)
+        Spacer(Modifier.height(4.dp))
+        Text(
+            when {
+                st.loading -> st.message ?: "Loading…"
+                st.networkRules == 0 -> "Loads when you open the Browser tab"
+                else -> "%,d blocking and %,d hiding rules".format(st.networkRules, st.cosmeticRules) +
+                    (if (st.updatedAt > 0) " · updated " + java.text.DateFormat.getDateInstance().format(java.util.Date(st.updatedAt)) else " · built-in copy") +
+                    (st.message?.let { " · $it" } ?: "")
+            },
+            style = Type.small, color = c.muted,
+        )
+        Spacer(Modifier.height(10.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            LineButton("Update lists", enabled = !st.loading) {
+                scope.launch { withContext(Dispatchers.IO) { runCatching { Filters.updateIfDue(ctx, force = true) } } }
+            }
+            if (allowedSites.isNotEmpty()) LineButton("Block on ${allowedSites.size} allowed site" + if (allowedSites.size == 1) "" else "s") { onClearAllowed() }
+        }
+    }
+    Divider()
 }
 
 @Composable

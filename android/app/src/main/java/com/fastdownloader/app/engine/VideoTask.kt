@@ -225,8 +225,9 @@ class VideoTask(
         req.addOption("--no-mtime")
         req.addOption("--newline")
         req.addOption("--no-overwrites")
-        req.addOption("--print", "after_move:filepath")
-        req.addOption("--no-simulate")
+        // The finished file's path goes to a file: plain --print would also silence the progress lines.
+        val pathFile = File(workDir, "path.txt").apply { delete() }
+        req.addCommands(listOf("--print-to-file", "after_move:filepath", pathFile.absolutePath))
         when (item.audio) {
             "mp3" -> req.addOption("-x").addOption("--audio-format", "mp3").addOption("--audio-quality", "0")
             "m4a" -> req.addOption("-x").addOption("--audio-format", "m4a")
@@ -238,7 +239,7 @@ class VideoTask(
             parseProgress(progress, line)
         }
         if (stopped) return Outcome.Stopped
-        val path = res.out.lines().map { it.trim() }.lastOrNull { it.startsWith("/") }
+        val path = (pathFile.takeIf { it.exists() }?.readLines() ?: res.out.lines()).map { it.trim() }.lastOrNull { it.startsWith("/") }
         if (path != null) {
             val f = File(path)
             synchronized(item) {
@@ -255,22 +256,33 @@ class VideoTask(
     private val SIZE = Regex("""of\s+~?\s*([\d.]+)\s*([KMGT]?i?B)""")
     private val SPEED = Regex("""at\s+([\d.]+)\s*([KMGT]?i?B)/s""")
 
+    // Video and audio usually arrive as two streams, one after the other: progress adds them up.
+    private var doneStreams = 0L
+    private var streamTotal = 0L
+    private var lastFraction = 0f
+
     private fun parseProgress(progress: Float, line: String) {
         when {
             line.startsWith("[Merger]") || line.startsWith("[VideoConvertor]") -> stageNote = "Joining video and audio…"
             line.startsWith("[ExtractAudio]") -> stageNote = "Converting audio…"
-            line.startsWith("[download]") -> stageNote = null
+            line.startsWith("[download] Destination") -> stageNote = null
         }
+        if (!line.startsWith("[download]")) return
         SPEED.find(line)?.let { rate = bytes(it.groupValues[1], it.groupValues[2]) }
+        val fraction = if (progress >= 0) (progress / 100f).coerceIn(0f, 1f) else return
+        val size = SIZE.find(line)?.let { bytes(it.groupValues[1], it.groupValues[2]) } ?: 0L
         synchronized(item) {
-            if (progress >= 0) item.fraction = (progress / 100f).coerceIn(0f, 1f)
-            SIZE.find(line)?.let {
-                val total = bytes(it.groupValues[1], it.groupValues[2])
-                if (total > 0) {
-                    item.total = total
-                    item.received = (total * item.fraction).toLong()
-                }
+            // A new stream started: count the finished one in full.
+            if (fraction + 0.05f < lastFraction || (size > 0 && streamTotal > 0 && size != streamTotal && fraction < 0.05f)) {
+                doneStreams += streamTotal
             }
+            if (size > 0) streamTotal = size
+            lastFraction = fraction
+            stageNote = null
+            val received = doneStreams + (streamTotal * fraction).toLong()
+            item.received = received
+            item.total = maxOf(item.total, doneStreams + streamTotal)
+            item.fraction = if (item.total > 0) (received.toFloat() / item.total).coerceIn(0f, 1f) else fraction
         }
     }
 

@@ -67,7 +67,7 @@ Not sure which Mac you have? Apple menu  â†’ **About This Mac**: "Chip: Apple Mâ
 1. Download the APK on your phone (arm64 for almost every phone; the universal one works everywhere) and open it.
 2. The first time, Android asks to allow installs from your browser: tap **Settings**, turn on **Allow from this source**, go back and tap **Install**.
 3. Open FastDownloader and allow notifications, so downloads can show progress in the background.
-4. To download a link from Chrome or any other app, tap **Share** and pick **FastDownloader**. The app's **Browser** tab finds videos on pages and blocks ads.
+4. The app opens on its **Browser** tab (YouTube). Every video gets a **Download** button, and ads are blocked with uBlock Origin's filter lists, including YouTube's video ads. To download a link from Chrome or any other app, tap **Share** and pick **FastDownloader**.
 
 Android 8 to 10 ask once for storage permission. Files are saved in `Download/FastDownloader/`.
 

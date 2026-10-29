@@ -47,12 +47,12 @@ import java.io.File
 /** What the Add panel opens with: a link, plus the browser's headers when it came from the Browser tab. */
 data class AddRequest(val url: String, val headers: Map<String, String> = emptyMap(), val auto: Boolean = true)
 
-enum class Tab { DOWNLOADS, BROWSER, SETTINGS }
+enum class Tab { BROWSER, DOWNLOADS, SETTINGS }
 
 class MainActivity : ComponentActivity() {
     private var addRequest by mutableStateOf<AddRequest?>(null)
     private var clipLink by mutableStateOf<String?>(null)
-    private var tab by mutableStateOf(Tab.DOWNLOADS)
+    private var tab by mutableStateOf(Tab.BROWSER)
     private var lastClip: String? = null
     private var pendingAfterPermission: (() -> Unit)? = null
 
@@ -171,12 +171,8 @@ private fun Root(
         Column(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding()) {
             Box(Modifier.weight(1f).fillMaxWidth()) {
                 // The browser stays loaded while other tabs are shown, so pages aren't lost.
-                var browserOpened by remember { mutableStateOf(false) }
-                if (tab == Tab.BROWSER) browserOpened = true
-                if (browserOpened) {
-                    Box(if (tab == Tab.BROWSER) Modifier.fillMaxSize() else Modifier.size(0.dp)) {
-                        BrowserScreen(visible = tab == Tab.BROWSER, onDownload = { onAdd(it) })
-                    }
+                Box(if (tab == Tab.BROWSER) Modifier.fillMaxSize() else Modifier.size(0.dp)) {
+                    BrowserScreen(visible = tab == Tab.BROWSER, onDownload = { onAdd(it) })
                 }
                 if (tab != Tab.BROWSER) {
                     Box(Modifier.fillMaxSize().background(c.bg)) {
@@ -216,9 +212,9 @@ private fun ClipBanner(link: String, onOpen: () -> Unit, onDismiss: () -> Unit) 
 private fun TabBar(tab: Tab, onTab: (Tab) -> Unit) {
     val c = colors
     Row(Modifier.fillMaxWidth().height(60.dp).background(c.panel), horizontalArrangement = Arrangement.SpaceEvenly) {
-        TabButton("Downloads", Icons.List, tab == Tab.DOWNLOADS, Modifier.weight(1f)) { onTab(Tab.DOWNLOADS) }
-        VDivider(60.dp)
         TabButton("Browser", Icons.Globe, tab == Tab.BROWSER, Modifier.weight(1f)) { onTab(Tab.BROWSER) }
+        VDivider(60.dp)
+        TabButton("Downloads", Icons.List, tab == Tab.DOWNLOADS, Modifier.weight(1f)) { onTab(Tab.DOWNLOADS) }
         VDivider(60.dp)
         TabButton("Settings", Icons.Tune, tab == Tab.SETTINGS, Modifier.weight(1f)) { onTab(Tab.SETTINGS) }
     }
