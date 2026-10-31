@@ -21,6 +21,8 @@ object Filters {
     val LISTS = listOf(
         FilterList("ublock-filters", "uBlock filters", "https://ublockorigin.github.io/uAssets/filters/filters.txt", true),
         FilterList("ublock-privacy", "uBlock filters: Privacy", "https://ublockorigin.github.io/uAssets/filters/privacy.txt", true),
+        // Scam, fake-download and malware sites, and the pop-ups that lead to them.
+        FilterList("ublock-badware", "uBlock filters: Badware risks", "https://ublockorigin.github.io/uAssets/filters/badware.txt", true),
         // Exceptions that keep sites working (consent dialogs, sign-ins, video players), as uBlock Origin has by default.
         FilterList("ublock-unbreak", "uBlock filters: Unbreak", "https://ublockorigin.github.io/uAssets/filters/unbreak.txt", true),
         FilterList("ublock-quick-fixes", "uBlock filters: Quick fixes", "https://ublockorigin.github.io/uAssets/filters/quick-fixes.txt", true),

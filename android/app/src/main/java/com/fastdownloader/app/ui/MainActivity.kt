@@ -12,6 +12,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -130,6 +131,12 @@ class MainActivity : ComponentActivity() {
         if (Categories.looksLikeFileUrl(link) || Links.isVideoPageUrl(link)) clipLink = link
     }
 
+    /** Sign-ins made in the Browser tab are written to disk now, so they're there even if Android ends the app. */
+    override fun onStop() {
+        super.onStop()
+        android.webkit.CookieManager.getInstance().flush()
+    }
+
     private fun askNotificationsOnce() {
         if (Build.VERSION.SDK_INT < 33) return
         val prefs = getSharedPreferences("ui", MODE_PRIVATE)
@@ -172,22 +179,28 @@ private fun Root(
 ) {
     val c = colors
     Box(Modifier.fillMaxSize().background(c.bg)) {
-        Column(Modifier.fillMaxSize().statusBarsPadding().bottomBarsPadding()) {
+        // A video filling the screen (phone sideways) gets the whole screen: no bars, no padding for them.
+        val videoMode = BrowserChrome.videoMode && tab == Tab.BROWSER
+        Column(if (videoMode) Modifier.fillMaxSize() else Modifier.fillMaxSize().statusBarsPadding().bottomBarsPadding()) {
             Box(Modifier.weight(1f).fillMaxWidth()) {
                 // The browser stays loaded while other tabs are shown, so pages aren't lost.
                 Box(if (tab == Tab.BROWSER) Modifier.fillMaxSize() else Modifier.size(0.dp)) {
-                    BrowserScreen(visible = tab == Tab.BROWSER, onDownload = { onAdd(it) })
+                    BrowserScreen(visible = tab == Tab.BROWSER, onDownload = { onAdd(it) }, onDownloads = { onTab(Tab.DOWNLOADS) }, onSettings = { onTab(Tab.SETTINGS) })
                 }
                 if (tab != Tab.BROWSER) {
-                    Box(Modifier.fillMaxSize().background(c.bg)) {
-                        if (tab == Tab.DOWNLOADS) DownloadsScreen(onAdd = { onAdd(AddRequest("", auto = false)) }) else SettingsScreen()
+                    BackHandler { onTab(Tab.BROWSER) }
+                    Column(Modifier.fillMaxSize().background(c.bg)) {
+                        PageBar(tab, onTab)
+                        Box(Modifier.weight(1f).fillMaxWidth()) {
+                            if (tab == Tab.DOWNLOADS) DownloadsScreen(onAdd = { onAdd(AddRequest("", auto = false)) }) else SettingsScreen()
+                        }
                     }
                 }
             }
-            UpdateBanner()
-            if (clipLink != null) ClipBanner(clipLink, onOpen = { onClipDismiss(); onAdd(AddRequest(clipLink)) }, onDismiss = onClipDismiss)
-            Divider()
-            TabBar(tab, onTab)
+            if (!videoMode) {
+                UpdateBanner()
+                if (clipLink != null) ClipBanner(clipLink, onOpen = { onClipDismiss(); onAdd(AddRequest(clipLink)) }, onDismiss = onClipDismiss)
+            }
         }
         if (addRequest != null) {
             AddPanel(request = addRequest, onClose = onAddClosed, withStorage = withStorage, onAdded = { onAddClosed(); onTab(Tab.DOWNLOADS) })
@@ -256,30 +269,17 @@ private fun UpdateBanner() {
     }
 }
 
+/** Top of the Downloads and Settings pages, with the other page's button. Back (button or swipe) returns to the Browser. */
 @Composable
-private fun TabBar(tab: Tab, onTab: (Tab) -> Unit) {
+private fun PageBar(tab: Tab, onTab: (Tab) -> Unit) {
     val c = colors
-    Row(Modifier.fillMaxWidth().height(44.dp).background(c.panel), horizontalArrangement = Arrangement.SpaceEvenly) {
-        TabButton("Browser", Icons.Globe, tab == Tab.BROWSER, Modifier.weight(1f)) { onTab(Tab.BROWSER) }
-        VDivider(44.dp)
-        TabButton("Downloads", Icons.List, tab == Tab.DOWNLOADS, Modifier.weight(1f)) { onTab(Tab.DOWNLOADS) }
-        VDivider(44.dp)
-        TabButton("Settings", Icons.Tune, tab == Tab.SETTINGS, Modifier.weight(1f)) { onTab(Tab.SETTINGS) }
+    Row(Modifier.fillMaxWidth().background(c.panel).padding(horizontal = 6.dp, vertical = 5.dp), verticalAlignment = Alignment.CenterVertically) {
+        Spacer(Modifier.width(10.dp))
+        Label(if (tab == Tab.DOWNLOADS) "Downloads" else "Settings", color = c.text, modifier = Modifier.weight(1f))
+        if (tab == Tab.DOWNLOADS) IconBox(Icons.Tune, "Settings") { onTab(Tab.SETTINGS) }
+        else DownloadsButton(onClick = { onTab(Tab.DOWNLOADS) }, modifier = Modifier)
     }
-}
-
-@Composable
-private fun TabButton(text: String, icon: ImageVector, selected: Boolean, modifier: Modifier, onClick: () -> Unit) {
-    val c = colors
-    Box(modifier.fillMaxSize().clickable(onClick = onClick)) {
-        if (selected) Box(Modifier.fillMaxWidth().height(2.dp).background(c.text).align(Alignment.TopCenter))
-        // Icon and name side by side: a slim bar leaves more of the screen for pages.
-        Row(Modifier.align(Alignment.Center), verticalAlignment = Alignment.CenterVertically) {
-            Icon(icon, null, tint = if (selected) c.text else c.muted, modifier = Modifier.size(16.dp))
-            Spacer(Modifier.width(6.dp))
-            Label(text, color = if (selected) c.text else c.muted)
-        }
-    }
+    Divider()
 }
 
 /** Opens a finished file in the app the user picks. */

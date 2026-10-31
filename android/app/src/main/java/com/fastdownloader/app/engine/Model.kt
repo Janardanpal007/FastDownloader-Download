@@ -71,6 +71,8 @@ data class Settings(
     val privacyHeaders: Boolean = true,
     val stripTracking: Boolean = true,
     val blockAds: Boolean = true,
+    /** No Shorts on YouTube in the Browser tab: hidden from pages, and Shorts links open as normal videos. */
+    val hideShorts: Boolean = true,
     /** Sites where the user turned ad blocking off (the browser's shield button). */
     val adblockAllow: List<String> = emptyList(),
     val keepHistory: Boolean = true,

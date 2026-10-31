@@ -4,6 +4,9 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.compose.ui.platform.LocalConfiguration
+import android.content.res.Configuration
+import android.os.Message
 import android.webkit.WebChromeClient
 import android.view.View
 import android.content.pm.ActivityInfo
@@ -11,7 +14,6 @@ import android.content.ContextWrapper
 import android.content.Context
 import android.app.Activity
 import android.os.Build
-import android.content.res.Configuration
 import android.view.WindowManager
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
@@ -27,10 +29,14 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -72,6 +78,7 @@ import androidx.webkit.WebViewCompat
 import androidx.webkit.WebViewFeature
 import com.fastdownloader.app.engine.AdBlock
 import com.fastdownloader.app.engine.Engine
+import com.fastdownloader.app.engine.Status
 import com.fastdownloader.app.engine.Filters
 import com.fastdownloader.app.engine.Links
 import com.fastdownloader.app.engine.Net
@@ -108,6 +115,12 @@ private fun blockedResponse(req: WebResourceRequest, pageUrl: String): WebResour
 }
 const val BROWSER_HOME = "https://www.youtube.com/"
 
+/** Browser state the rest of the app's screen follows. */
+object BrowserChrome {
+    /** A video fills the screen (the phone is sideways): the app hides its own bars. */
+    var videoMode by mutableStateOf(false)
+}
+
 /** What the WebView's background threads need to know about the current page. */
 private class PageState {
     @Volatile var topUrl: String = BROWSER_HOME
@@ -127,8 +140,30 @@ private class PageBridge(
     private val state: PageState,
     private val onVideo: (VideoClick) -> Unit,
     private val onFound: (frame: String, count: Int) -> Unit,
+    private val onMedia: (Media) -> Unit,
+    private val onPopupBlocked: () -> Unit,
 ) {
     private val main = Handler(Looper.getMainLooper())
+
+    /** uBlock scriptlets for the page or frame at [url], as JSON (assets/scriptlets.js runs them). */
+    @JavascriptInterface
+    fun scriptlets(url: String, top: Boolean): String =
+        if (state.blocking(if (top) url else state.topUrl)) Filters.engine?.scriptletsFor(url) ?: "[]" else "[]"
+
+    @JavascriptInterface
+    fun popupBlocked(@Suppress("UNUSED_PARAMETER") url: String) {
+        main.post { onPopupBlocked() }
+    }
+
+    /** A video playlist the page loaded, recognised by its content (sites often hide the usual .m3u8 name). */
+    @JavascriptInterface
+    fun media(url: String, kind: String, frame: String) {
+        if (!url.startsWith("http") || kind !in setOf("m3u8", "mpd")) return
+        main.post { onMedia(Media(url, kind, frame)) }
+    }
+
+    @JavascriptInterface
+    fun hideShorts(): Boolean = Engine.settings.hideShorts
 
     /** YouTube ad removal is part of ad blocking: off when blocking is off for the site. */
     @JavascriptInterface
@@ -180,7 +215,7 @@ private fun typeOf(req: WebResourceRequest): AdBlock.Type {
 
 @SuppressLint("SetJavaScriptEnabled", "ClickableViewAccessibility", "RequiresFeature")
 @Composable
-fun BrowserScreen(visible: Boolean, onDownload: (AddRequest) -> Unit) {
+fun BrowserScreen(visible: Boolean, onDownload: (AddRequest) -> Unit, onDownloads: () -> Unit, onSettings: () -> Unit) {
     val c = colors
     val ctx = LocalContext.current
     val focus = LocalFocusManager.current
@@ -217,7 +252,9 @@ fun BrowserScreen(visible: Boolean, onDownload: (AddRequest) -> Unit) {
     fun downloadVideo(click: VideoClick) {
         val top = state.topUrl
         val src = click.src
-        val stream = media.lastOrNull { it.kind == "m3u8" || it.kind == "mpd" }
+        // The playlist loaded by the video's own frame (players often sit in a frame of another site).
+        val streams = media.filter { it.kind == "m3u8" || it.kind == "mpd" }
+        val stream = streams.lastOrNull { AdBlock.hostOf(it.referer) == AdBlock.hostOf(click.page) } ?: streams.lastOrNull()
         val req = when {
             // Sites yt-dlp knows (YouTube, Vimeo, X…): the page, for every quality.
             Links.isVideoPageUrl(click.page) -> AddRequest(click.page, headersFor(click.page, top))
@@ -231,9 +268,18 @@ fun BrowserScreen(visible: Boolean, onDownload: (AddRequest) -> Unit) {
         onDownload(req)
     }
 
-    val pageScript = remember { ctx.assets.open("page.js").bufferedReader().readText() }
+    // The scriptlets first: they must run before the page's own scripts.
+    val pageScript = remember {
+        ctx.assets.open("scriptlets.js").bufferedReader().readText() + "\n" + ctx.assets.open("page.js").bufferedReader().readText()
+    }
     val bridge = remember {
-        PageBridge(state, onVideo = { downloadVideo(it) }, onFound = { frame, n -> if (n > 0) videosByFrame[frame] = n else videosByFrame.remove(frame) })
+        PageBridge(
+            state,
+            onVideo = { downloadVideo(it) },
+            onFound = { frame, n -> if (n > 0) videosByFrame[frame] = n else videosByFrame.remove(frame) },
+            onMedia = { m -> if (media.none { it.url == m.url }) media.add(m) },
+            onPopupBlocked = { blockedCount++ },
+        )
     }
     val documentStart = remember { WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT) }
 
@@ -248,6 +294,8 @@ fun BrowserScreen(visible: Boolean, onDownload: (AddRequest) -> Unit) {
             settings.useWideViewPort = true
             settings.builtInZoomControls = true
             settings.displayZoomControls = false
+            // New windows go through onCreateWindow below, where pop-ups and pop-unders are stopped.
+            settings.setSupportMultipleWindows(true)
             CookieManager.getInstance().setAcceptCookie(true)
             CookieManager.getInstance().setAcceptThirdPartyCookies(this, false)
             addJavascriptInterface(bridge, "__fdBridge")
@@ -269,10 +317,12 @@ fun BrowserScreen(visible: Boolean, onDownload: (AddRequest) -> Unit) {
                     }
                     MEDIA.find(s)?.let { m ->
                         val kind = m.groupValues[1].lowercase()
+                        // The page or frame that asked for it: some servers only answer requests from their own player.
+                        val referer = request.requestHeaders["Referer"] ?: request.requestHeaders["referer"] ?: state.topUrl
                         post {
                             // Skip the many small pieces a stream is made of; keep its playlist.
                             if (media.none { it.url == s } && !(kind == "mp4" && s.contains("range=", true))) {
-                                media.add(Media(s, kind, state.topUrl))
+                                media.add(Media(s, kind, referer))
                             }
                         }
                     }
@@ -295,6 +345,7 @@ fun BrowserScreen(visible: Boolean, onDownload: (AddRequest) -> Unit) {
 
                 override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
                     loading = true
+                    BrowserChrome.videoMode = false
                     if (url != pageUrl) { media.clear(); blockedCount = 0; videosByFrame.clear(); showMedia = false }
                     pageUrl = url
                     state.topUrl = url
@@ -325,6 +376,42 @@ fun BrowserScreen(visible: Boolean, onDownload: (AddRequest) -> Unit) {
 
                 override fun onHideCustomView() {
                     fullScreen = null
+                }
+
+                // A page opening a new window. A link the user tapped opens here, in this tab. Windows a page
+                // opens by itself, or from a tap somewhere else on the page (the usual "pop-under" ad trick),
+                // only open when they stay on the same site.
+                override fun onCreateWindow(view: WebView, isDialog: Boolean, isUserGesture: Boolean, resultMsg: Message): Boolean {
+                    val blocking = state.blocking()
+                    fun open(url: String) {
+                        if (blocking && Filters.engine?.shouldBlock(url, state.topUrl, AdBlock.Type.POPUP) == true) blockedCount++
+                        else view.loadUrl(url)
+                    }
+                    val hit = view.hitTestResult
+                    val link = hit.extra?.takeIf {
+                        hit.type == WebView.HitTestResult.SRC_ANCHOR_TYPE || hit.type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE
+                    }
+                    if (isUserGesture && link != null && link.startsWith("http")) { open(link); return false }
+                    if (!isUserGesture && blocking) { blockedCount++; return false }
+                    // Not a link: let the window start loading in a hidden view to see where it goes.
+                    val probe = WebView(view.context)
+                    var decided = false
+                    fun decide(url: String) {
+                        if (decided || url.isEmpty() || url == "about:blank") return
+                        decided = true
+                        probe.stopLoading()
+                        val site = { u: String -> AdBlock.hostOf(u.lowercase())?.let { AdBlock.baseDomain(it) } }
+                        if (!blocking || site(url) == site(state.topUrl)) open(url) else blockedCount++
+                        probe.post { probe.destroy() }
+                    }
+                    probe.webViewClient = object : WebViewClient() {
+                        override fun shouldOverrideUrlLoading(v: WebView, r: WebResourceRequest): Boolean { decide(r.url.toString()); return true }
+                        override fun onPageStarted(v: WebView, url: String, favicon: Bitmap?) { decide(url) }
+                    }
+                    probe.postDelayed({ if (!decided) { decided = true; probe.destroy() } }, 10_000)
+                    (resultMsg.obj as WebView.WebViewTransport).webView = probe
+                    resultMsg.sendToTarget()
+                    return true
                 }
             }
             // Links the page offers as downloads come here instead of the system downloader.
@@ -358,7 +445,6 @@ fun BrowserScreen(visible: Boolean, onDownload: (AddRequest) -> Unit) {
             }
         }
         val orientation = act.requestedOrientation
-        val wasPortrait = act.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
         act.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
         // Upright videos (shorts, reels) stay upright.
         web.evaluateJavascript(FULLSCREEN_SHAPE) { shape ->
@@ -367,10 +453,45 @@ fun BrowserScreen(visible: Boolean, onDownload: (AddRequest) -> Unit) {
         onDispose {
             root.removeView(fs.first)
             bars.show(WindowInsetsCompat.Type.systemBars())
-            // Turn back the way the screen was (a phone lying flat wouldn't turn it by itself), then
-            // let the phone's own rotation setting take over again.
-            act.requestedOrientation = if (wasPortrait) ActivityInfo.SCREEN_ORIENTATION_PORTRAIT else ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-            root.postDelayed({ if (fullScreen == null) act.requestedOrientation = orientation }, 1500)
+            // Back to the phone's own rotation setting.
+            act.requestedOrientation = orientation
+            if (Build.VERSION.SDK_INT >= 28) act.window.attributes = act.window.attributes.apply { layoutInDisplayCutoutMode = cutout }
+        }
+    }
+
+    // Phone turned sideways while a video plays: the page's player fills the screen and the app's bars and the
+    // system bars step aside. Turning back (or Back) undoes it. Real full screen takes over when the page asks.
+    val landscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+    LaunchedEffect(landscape, visible, fullScreen) {
+        if (landscape && visible && fullScreen == null) {
+            val frames = videosByFrame.keys.filter { it.isNotEmpty() }
+                .joinToString(",", "[", "]") { "\"" + it.replace("\\", "\\\\").replace("\"", "\\\"") + "\"" }
+            web.evaluateJavascript("window.__fdVideoMode ? window.__fdVideoMode(true, $frames) : ''") { r ->
+                BrowserChrome.videoMode = r == "\"video\"" || r == "\"frame\""
+            }
+        } else {
+            if (fullScreen == null) web.evaluateJavascript("window.__fdVideoMode && window.__fdVideoMode(false)", null)
+            BrowserChrome.videoMode = false
+        }
+    }
+    BackHandler(enabled = BrowserChrome.videoMode && fullScreen == null) {
+        web.evaluateJavascript("window.__fdVideoMode && window.__fdVideoMode(false)", null)
+        BrowserChrome.videoMode = false
+    }
+    DisposableEffect(BrowserChrome.videoMode) {
+        val act = ctx.findActivity()
+        if (!BrowserChrome.videoMode || act == null) return@DisposableEffect onDispose {}
+        val bars = WindowCompat.getInsetsController(act.window, act.window.decorView)
+        bars.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        bars.hide(WindowInsetsCompat.Type.systemBars())
+        val cutout = if (Build.VERSION.SDK_INT >= 28) act.window.attributes.layoutInDisplayCutoutMode else 0
+        if (Build.VERSION.SDK_INT >= 28) {
+            act.window.attributes = act.window.attributes.apply {
+                layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            }
+        }
+        onDispose {
+            bars.show(WindowInsetsCompat.Type.systemBars())
             if (Build.VERSION.SDK_INT >= 28) act.window.attributes = act.window.attributes.apply { layoutInDisplayCutoutMode = cutout }
         }
     }
@@ -396,9 +517,7 @@ fun BrowserScreen(visible: Boolean, onDownload: (AddRequest) -> Unit) {
 
     Column(Modifier.fillMaxSize()) {
         // A compact address bar, so pages (and their cookie or terms dialogs) keep as much room as possible.
-        Row(Modifier.fillMaxWidth().background(c.panel).padding(horizontal = 6.dp, vertical = 5.dp), verticalAlignment = Alignment.CenterVertically) {
-            IconBox(Icons.Back, "Back", tint = if (canBack) c.text else c.muted) { if (web.canGoBack()) web.goBack() }
-            Spacer(Modifier.width(5.dp))
+        if (!BrowserChrome.videoMode) Row(Modifier.fillMaxWidth().background(c.panel).padding(horizontal = 6.dp, vertical = 5.dp), verticalAlignment = Alignment.CenterVertically) {
             BasicTextField(
                 value = address, onValueChange = { address = it }, singleLine = true,
                 textStyle = Type.small.copy(color = c.text), cursorBrush = SolidColor(c.accent),
@@ -407,29 +526,24 @@ fun BrowserScreen(visible: Boolean, onDownload: (AddRequest) -> Unit) {
                 modifier = Modifier.weight(1f).height(40.dp).border(1.dp, c.border).padding(horizontal = 10.dp)
                     .wrapContentHeight(Alignment.CenterVertically),
             )
-            Spacer(Modifier.width(5.dp))
-            // Download, with the number of videos on the page. With no video but media files the page
-            // loaded, it lists those files instead.
-            Box {
-                IconBox(
-                    Icons.Download, if (videoCount > 0) "Download ($videoCount videos on this page)" else "Download",
-                    tint = if (videoCount > 0 || media.isNotEmpty()) c.accent else c.muted,
-                ) {
-                    if (videoCount == 0 && media.isNotEmpty()) showMedia = !showMedia
-                    else onDownload(AddRequest(pageUrl, headersFor(pageUrl, pageUrl)))
-                }
-                if (videoCount > 0) {
-                    Text(
-                        "$videoCount", style = Type.label.copy(fontSize = 9.sp), color = c.solidFg,
-                        modifier = Modifier.align(Alignment.TopEnd).background(c.accent).padding(horizontal = 3.dp),
-                    )
-                }
-            }
-            Spacer(Modifier.width(5.dp))
+            Spacer(Modifier.width(4.dp))
+            // Download and the Downloads list in one: with videos on the page a tap downloads (the number is how
+            // many); otherwise it opens the list (the number is how many are downloading). Holding it always opens the list.
+            DownloadsButton(
+                onClick = {
+                    if (videoCount > 0) onDownload(AddRequest(pageUrl, headersFor(pageUrl, pageUrl)))
+                    else if (media.isNotEmpty()) showMedia = !showMedia
+                    else onDownloads()
+                },
+                onLongClick = onDownloads,
+                videos = videoCount,
+                found = videoCount > 0 || media.isNotEmpty(),
+            )
+            Spacer(Modifier.width(4.dp))
             // Shield with the number blocked: ad blocking on this site (tap to turn it off or on for the site).
             Box {
                 IconBox(
-                    Icons.Shield, "Ad blocking on this site ($blockedCount blocked)",
+                    Icons.Shield, "Ad blocking on this site ($blockedCount blocked)", BarIcon,
                     tint = if (!appSettings.blockAds || siteAllowed) c.muted else c.ok,
                 ) {
                     if (!appSettings.blockAds) {
@@ -454,10 +568,12 @@ fun BrowserScreen(visible: Boolean, onDownload: (AddRequest) -> Unit) {
                     )
                 }
             }
-            Spacer(Modifier.width(5.dp))
-            IconBox(if (loading) Icons.Close else Icons.Refresh, "Reload") { if (loading) web.stopLoading() else web.reload() }
+            Spacer(Modifier.width(4.dp))
+            IconBox(if (loading) Icons.Close else Icons.Refresh, "Reload", BarIcon) { if (loading) web.stopLoading() else web.reload() }
+            Spacer(Modifier.width(4.dp))
+            IconBox(Icons.Tune, "Settings", BarIcon, onClick = onSettings)
         }
-        Divider()
+        if (!BrowserChrome.videoMode) Divider()
         Box(Modifier.weight(1f).fillMaxWidth()) {
             AndroidView(factory = { (web.parent as? ViewGroup)?.removeView(web); web }, modifier = Modifier.fillMaxSize())
         }
@@ -502,4 +618,39 @@ private tailrec fun Context.findActivity(): Activity? = when (this) {
     is Activity -> this
     is ContextWrapper -> baseContext.findActivity()
     else -> null
+}
+
+/** The address bar's buttons, a little narrower than usual so the address keeps room. */
+private val BarIcon = Modifier.width(36.dp)
+
+/**
+ * The Download button. [videos] > 0: the number of videos on the page, in blue. Otherwise the number of downloads
+ * in progress. [found]: something on the page can be downloaded.
+ */
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun DownloadsButton(onClick: () -> Unit, onLongClick: () -> Unit = onClick, videos: Int = 0, found: Boolean = false, modifier: Modifier = BarIcon) {
+    val c = colors
+    val items by Engine.itemsFlow.collectAsState()
+    val active = items.count { it.status == Status.DOWNLOADING || it.status == Status.QUEUED }
+    val badge = if (videos > 0) videos else active
+    Box {
+        Box(
+            modifier.size(40.dp).border(1.dp, c.border).combinedClickable(onClick = onClick, onLongClick = onLongClick),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                Icons.Download,
+                if (videos > 0) "Download ($videos videos on this page)" else "Downloads ($active in progress)",
+                tint = if (found) c.accent else c.text, modifier = Modifier.size(18.dp),
+            )
+        }
+        if (badge > 0) {
+            Text(
+                if (badge > 99) "99+" else "$badge", style = Type.label.copy(fontSize = 9.sp),
+                color = c.solidFg,
+                modifier = Modifier.align(Alignment.TopEnd).background(if (videos > 0) c.accent else c.solidBg).padding(horizontal = 3.dp),
+            )
+        }
+    }
 }

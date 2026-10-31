@@ -89,6 +89,37 @@ class AdBlockTest {
     }
 
     @Test
+    fun scriptlets() {
+        assertEquals(listOf("set", "a.b", "false"), AdBlock.scriptletArgs("set, a.b, false"))
+        assertEquals(listOf("acs", "x", "y, z"), AdBlock.scriptletArgs("acs, x, 'y, z'"))
+        assertEquals(listOf("nostif", "a,b", "500"), AdBlock.scriptletArgs("""nostif, a\,b, 500"""))
+        assertEquals(listOf("rpfr", "/\"a\"/", ""), AdBlock.scriptletArgs("""rpfr, /"a"/, """))
+        assertEquals(emptyList<String>(), AdBlock.scriptletArgs(""))
+
+        val a = ab(
+            "example.com,~shop.example.com##+js(set, ads.on, false)",
+            "example.com##+js(nowoif)",
+            "news.example.com#@#+js(nowoif)",
+            "example.*##+js(aopr, adblock)",
+            "other.org##+js(nowoif)",
+            "other.org#@#+js()",
+            "example.com##+js(not-a-scriptlet)",
+            "##+js(nowoif)",
+        )
+        assertEquals(4, a.scriptletRules)
+        val news = a.scriptletsFor("https://news.example.com/a")
+        assertEquals("""[["set-constant","ads.on","false"],["abort-on-property-read","adblock"]]""", news)
+        assertEquals(
+            """[["set-constant","ads.on","false"],["no-window-open-if"],["abort-on-property-read","adblock"]]""",
+            a.scriptletsFor("https://www.example.com/"),
+        )
+        assertEquals("""[["no-window-open-if"],["abort-on-property-read","adblock"]]""", a.scriptletsFor("https://shop.example.com/"))
+        assertEquals("[]", a.scriptletsFor("https://other.org/")) // #@#+js() turns them all off
+        assertEquals("[]", a.scriptletsFor("https://unrelated.net/")) // no generic scriptlets
+        assertEquals("""[["set-constant","q","\"x\""]]""", ab("""a.com##+js(set, q, '"x"')""").scriptletsFor("https://a.com/"))
+    }
+
+    @Test
     fun helpers() {
         assertEquals("example.co.uk", AdBlock.baseDomain("www.news.example.co.uk"))
         assertEquals("example.com", AdBlock.baseDomain("a.b.example.com"))
@@ -103,9 +134,11 @@ class AdBlockTest {
         val t0 = System.nanoTime()
         val a = AdBlock.parse(lists)
         val ms = (System.nanoTime() - t0) / 1_000_000
-        println("Loaded ${a.networkRules} network and ${a.cosmeticRules} element-hiding rules in $ms ms")
+        println("Loaded ${a.networkRules} network, ${a.cosmeticRules} element-hiding and ${a.scriptletRules} scriptlet rules in $ms ms")
         assertTrue(a.networkRules > 50_000)
         assertTrue(a.cosmeticRules > 10_000)
+        assertTrue(a.scriptletRules > 2_000)
+        assertTrue("json-prune" in a.scriptletsFor("https://m.youtube.com/watch?v=x"))
         val yt = "https://www.youtube.com/watch?v=x"
         assertTrue(a.shouldBlock("https://securepubads.g.doubleclick.net/tag/js/gpt.js", page, Type.SCRIPT))
         assertTrue(a.shouldBlock("https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js", page, Type.SCRIPT))

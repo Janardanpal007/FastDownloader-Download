@@ -126,6 +126,7 @@ fun SettingsScreen() {
             Toggle("Remove tracking tags from links", "utm_source, fbclid, gclid and others", s.stripTracking) { v -> set { it.copy(stripTracking = v) } }
             Toggle("Block ads and trackers", "In the Browser tab, with uBlock Origin's filter lists", s.blockAds) { v -> set { it.copy(blockAds = v) } }
             FilterLists(s.adblockAllow) { set { it.copy(adblockAllow = emptyList()) } }
+            Toggle("Hide YouTube Shorts", "In the Browser tab; Shorts links open as normal videos", s.hideShorts) { v -> set { it.copy(hideShorts = v) } }
             Toggle("Keep download history", "Off: finished downloads leave the list (files stay)", s.keepHistory) { v -> set { it.copy(keepHistory = v) } }
             Row(Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 LineButton("Clear history") { Engine.clearHistory() }

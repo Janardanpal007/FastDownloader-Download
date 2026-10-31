@@ -10,8 +10,9 @@ package com.fastdownloader.app.engine
  *   exceptions      @@rule, and @@||site^$document / $elemhide / $generichide for whole pages
  *   element hiding  ##.ad  example.com##.banner  example.*##.ad  #@# exceptions, and the :has() / :not() CSS
  *   hosts files     0.0.0.0 ads.example.com
- * Rules needing uBlock's own runtime (scriptlets ##+js, procedural :has-text() etc., $removeparam,
- * $csp, $redirect-rule, regex patterns) are skipped, so nothing half-works.
+ *   scriptlets      example.com##+js(set, ads.enabled, false)  #@#+js(…) exceptions; run by assets/scriptlets.js
+ * Rules needing more of uBlock's own runtime (procedural :has-text() etc., $removeparam, $csp,
+ * $redirect-rule, regex patterns) are skipped, so nothing half-works.
  *
  * Plain Kotlin (no Android classes), so it can be unit-tested on the PC.
  */
@@ -69,9 +70,16 @@ class AdBlock private constructor() {
     private val specific = HashMap<String, MutableList<String>>() // host or "name.*" → selectors
     private val specificAllow = HashMap<String, MutableSet<String>>()
 
+    // Scriptlets: host or "name.*" → scriptlets for it; exceptions by host ("" = everywhere).
+    private class Scriptlet(val key: String, val args: List<String>, val notDomains: List<String>)
+    private val scriptlets = HashMap<String, MutableList<Scriptlet>>()
+    private val scriptletAllow = HashMap<String, MutableSet<String>>()
+
     var networkRules = 0
         private set
     var cosmeticRules = 0
+        private set
+    var scriptletRules = 0
         private set
 
     // ---------------- matching ----------------
@@ -154,6 +162,28 @@ class AdBlock private constructor() {
         return out.joinToString("\n")
     }
 
+    /**
+     * The scriptlets for a page, as a JSON array of [name, arg…] arrays for assets/scriptlets.js.
+     * Exceptions ("#@#+js(…)") remove one; "#@#+js()" turns them all off for the site.
+     */
+    fun scriptletsFor(pageUrl: String): String {
+        if (pageFlags(pageUrl) and FLAG_DOCUMENT != 0) return "[]"
+        val host = hostOf(pageUrl.lowercase()) ?: return "[]"
+        val keys = specificKeys(host)
+        val allowed = HashSet<String>()
+        scriptletAllow[""]?.let { allowed.addAll(it) }
+        for (k in keys) scriptletAllow[k]?.let { allowed.addAll(it) }
+        if ("" in allowed) return "[]"
+        val out = LinkedHashMap<String, List<String>>()
+        for (k in keys) {
+            scriptlets[k]?.forEach { s ->
+                if (s.key in allowed || s.notDomains.any { hostIn(host, it) }) return@forEach
+                out[s.key] = s.args
+            }
+        }
+        return out.values.joinToString(",", "[", "]") { args -> args.joinToString(",", "[", "]") { jsonString(it) } }
+    }
+
     /** "www.news.example.co.uk" → itself, its parent domains, and "example.*" for entity rules. */
     private fun specificKeys(host: String): List<String> {
         val keys = mutableListOf<String>()
@@ -184,11 +214,35 @@ class AdBlock private constructor() {
             if (h.isNotEmpty() && h != "localhost" && h.contains('.')) addNet("||$h^")
             return
         }
-        // Scriptlets, procedural and HTML filters (#?# #$# #%# ##+js ##^) need uBlock's own runtime.
+        SCRIPTLET.matchEntire(line)?.let { m ->
+            addScriptlet(m.groupValues[1], m.groupValues[2] == "@", m.groupValues[3])
+            return
+        }
+        // Procedural and HTML filters (#?# #$# #%# ##^) need uBlock's own runtime.
         if (UNSUPPORTED_MARKERS.any { line.contains(it) }) return
         val cosmetic = cosmeticSplit(line)
         if (cosmetic != null) addCosmetic(cosmetic.first, cosmetic.second, cosmetic.third)
         else addNet(line)
+    }
+
+    private fun addScriptlet(domainsPart: String, exception: Boolean, body: String) {
+        val domains = domainsPart.split(',').map { it.trim().lowercase() }.filter { it.isNotEmpty() }
+        val positive = domains.filter { !it.startsWith('~') }
+        val args = scriptletArgs(body)
+        if (exception) {
+            // "#@#+js()" (no name) turns off every scriptlet on those sites.
+            val key = if (args.isEmpty()) "" else (SCRIPTLET_NAMES[args[0]] ?: return).let { name -> (listOf(name) + args.drop(1)).joinToString("\u0000") }
+            if (positive.isEmpty()) scriptletAllow.getOrPut("") { HashSet() } += key
+            else positive.forEach { scriptletAllow.getOrPut(it) { HashSet() } += key }
+            return
+        }
+        // Scriptlets only run on the sites a rule names (uBlock's lists have no generic ones).
+        if (args.isEmpty() || positive.isEmpty()) return
+        val name = SCRIPTLET_NAMES[args[0]] ?: return
+        val full = listOf(name) + args.drop(1)
+        val rule = Scriptlet(full.joinToString("\u0000"), full, domains.filter { it.startsWith('~') }.map { it.substring(1) })
+        scriptletRules++
+        positive.forEach { scriptlets.getOrPut(it) { ArrayList(1) } += rule }
     }
 
     /** "domains##selector" → (domains, selector, isException), or null for network rules. */
@@ -338,7 +392,89 @@ class AdBlock private constructor() {
         const val FLAG_ELEMHIDE = 2
         const val FLAG_GENERICHIDE = 4
 
-        private val UNSUPPORTED_MARKERS = listOf("#?#", "#$#", "#%#", "#@?#", "#@$#", "#@%#", "##+js", "#@#+js", "##^", "#@#^")
+        private val UNSUPPORTED_MARKERS = listOf("#?#", "#$#", "#%#", "#@?#", "#@$#", "#@%#", "##^", "#@#^")
+        private val SCRIPTLET = Regex("""^([^#]*)#(@?)#\+js\((.*)\)$""")
+
+        /** uBlock's scriptlet names and short names → the names assets/scriptlets.js knows. */
+        private val SCRIPTLET_NAMES: Map<String, String> = buildMap {
+            fun names(canonical: String, vararg aliases: String) {
+                put(canonical, canonical)
+                put("$canonical.js", canonical)
+                aliases.forEach { put(it, canonical); put("$it.js", canonical) }
+            }
+            names("set-constant", "set")
+            names("abort-on-property-read", "aopr")
+            names("abort-on-property-write", "aopw")
+            names("abort-current-script", "acs", "abort-current-inline-script", "acis")
+            names("abort-on-stack-trace", "aost")
+            names("prevent-setTimeout", "no-setTimeout-if", "nostif", "setTimeout-defuser")
+            names("prevent-setInterval", "no-setInterval-if", "nosiif", "setInterval-defuser")
+            names("nano-setTimeout-booster", "nano-stb")
+            names("nano-setInterval-booster", "nano-sib")
+            names("prevent-addEventListener", "addEventListener-defuser", "aeld")
+            names("noeval")
+            names("noeval-if", "prevent-eval-if")
+            names("no-window-open-if", "nowoif", "prevent-window-open", "window.open-defuser")
+            names("json-prune")
+            names("json-prune-fetch-response")
+            names("json-prune-xhr-response")
+            names("trusted-replace-fetch-response", "trusted-rpfr")
+            names("trusted-replace-xhr-response")
+            names("no-fetch-if", "prevent-fetch")
+            names("no-xhr-if", "prevent-xhr")
+            names("nowebrtc")
+            names("remove-attr", "ra")
+            names("remove-class", "rc")
+            names("remove-node-text", "rmnt")
+            names("trusted-replace-node-text", "trusted-rpnt", "replace-node-text", "rpnt")
+            names("set-local-storage-item")
+            names("set-session-storage-item")
+            names("remove-cookie", "cookie-remover")
+            names("set-cookie")
+            names("window.name-defuser")
+            names("alert-buster")
+        }
+
+        /** "set, a.b, 'x\\, y'" → [set, a.b, x, y]: commas split (unless escaped or quoted), outer quotes dropped. */
+        fun scriptletArgs(body: String): List<String> {
+            val out = mutableListOf<String>()
+            var i = 0
+            val n = body.length
+            while (true) {
+                while (i < n && body[i] == ' ') i++
+                val sb = StringBuilder()
+                val q = if (i < n && (body[i] == '\'' || body[i] == '"' || body[i] == '`')) body[i] else null
+                if (q != null) {
+                    i++
+                    while (i < n && body[i] != q) {
+                        if (body[i] == '\\' && i + 1 < n && body[i + 1] == q) i++
+                        sb.append(body[i]); i++
+                    }
+                    i++ // closing quote
+                    while (i < n && body[i] != ',') i++
+                } else {
+                    while (i < n && body[i] != ',') {
+                        if (body[i] == '\\' && i + 1 < n && body[i + 1] == ',') i++
+                        sb.append(body[i]); i++
+                    }
+                }
+                out += if (q != null) sb.toString() else sb.toString().trim()
+                if (i >= n) break
+                i++ // the comma
+            }
+            return if (out.size == 1 && out[0].isEmpty()) emptyList() else out
+        }
+
+        private fun jsonString(s: String): String {
+            val sb = StringBuilder("\"")
+            for (c in s) when {
+                c == '"' -> sb.append("\\\"")
+                c == '\\' -> sb.append("\\\\")
+                c < ' ' || c == '\u2028' || c == '\u2029' -> sb.append(String.format("\\u%04x", c.code))
+                else -> sb.append(c)
+            }
+            return sb.append('"').toString()
+        }
         private val OPTIONS = Regex("""[\w~,=|.\-:*+/]+""")
         private val HOST_ONLY = Regex("""[a-z0-9.\-_]+\^?\|?""")
         private val UNSUPPORTED_CSS = Regex(
