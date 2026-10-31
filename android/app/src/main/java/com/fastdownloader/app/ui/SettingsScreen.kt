@@ -37,7 +37,9 @@ import com.fastdownloader.app.BuildConfig
 import com.fastdownloader.app.engine.Engine
 import com.fastdownloader.app.engine.Filters
 import com.fastdownloader.app.engine.Net
+import com.fastdownloader.app.engine.Format
 import com.fastdownloader.app.engine.Settings
+import com.fastdownloader.app.engine.Updater
 import com.fastdownloader.app.engine.Ytdlp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -140,6 +142,8 @@ fun SettingsScreen() {
 
         Section("About") {
             Info("FastDownloader", "Version ${BuildConfig.VERSION_NAME} for Android 8 to 17")
+            AppUpdate()
+            Toggle("Check for updates", "Asks GitHub every 6 hours and notifies you of a new version", s.checkUpdates) { v -> set { it.copy(checkUpdates = v) } }
             Info("Made by", "Copyright © 2026 Janardan/TSE" + if (s.userName.isNotBlank()) " · registered to ${s.userName}" else "")
             Info(
                 "Licence",
@@ -184,6 +188,46 @@ private fun FilterLists(allowedSites: List<String>, onClearAllowed: () -> Unit) 
                 scope.launch { withContext(Dispatchers.IO) { runCatching { Filters.updateIfDue(ctx, force = true) } } }
             }
             if (allowedSites.isNotEmpty()) LineButton("Block on ${allowedSites.size} allowed site" + if (allowedSites.size == 1) "" else "s") { onClearAllowed() }
+        }
+    }
+    Divider()
+}
+
+/** Newest version: check, download the APK (checked against its SHA-256), install. */
+@Composable
+private fun AppUpdate() {
+    val c = colors
+    val ctx = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val st by Updater.state.collectAsState()
+    val r = st.available
+    Column(Modifier.fillMaxWidth().padding(16.dp)) {
+        Text(if (r != null) "Version ${r.version} is available" else "Updates", style = Type.strong, color = c.text)
+        Text(
+            when {
+                st.error != null -> st.error!!
+                st.checking -> "Checking…"
+                st.progress != null -> "Downloading… ${(st.progress!! * 100).toInt()}%"
+                st.ready != null -> "Downloaded and checked. Tap Install; Android asks you to confirm."
+                r != null && r.apkUrl == null -> "This release has no Android app yet."
+                r != null -> "You have ${st.current}." + if (r.apkSize > 0) " Download: ${Format.size(r.apkSize)}" else ""
+                st.lastCheck > 0 -> "You have the newest version."
+                else -> "Tap Check to look for a newer version."
+            },
+            style = Type.small, color = if (st.error != null) c.err else c.muted,
+        )
+        Spacer(Modifier.height(10.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            when {
+                st.ready != null -> SolidButton("Install", onClick = { Updater.install(ctx) })
+                r?.apkUrl != null -> SolidButton("Download update", onClick = {
+                    if (st.progress == null) scope.launch { withContext(Dispatchers.IO) { Updater.download(ctx) } }
+                })
+                else -> LineButton("Check", enabled = !st.checking) {
+                    scope.launch { withContext(Dispatchers.IO) { runCatching { Updater.check() } } }
+                }
+            }
+            if (r != null) LineButton("What's new") { Updater.openPage(ctx) }
         }
     }
     Divider()

@@ -11,7 +11,7 @@ import kotlinx.serialization.json.jsonPrimitive
 import java.io.File
 
 /**
- * The filter lists uBlock Origin uses by default. Copies of the first four ship inside the app,
+ * The filter lists uBlock Origin uses by default. Copies of the bundled ones ship inside the app,
  * so blocking works from the first launch; all of them are refreshed from their publishers every
  * few days (through the proxy, if one is set).
  */
@@ -21,6 +21,9 @@ object Filters {
     val LISTS = listOf(
         FilterList("ublock-filters", "uBlock filters", "https://ublockorigin.github.io/uAssets/filters/filters.txt", true),
         FilterList("ublock-privacy", "uBlock filters: Privacy", "https://ublockorigin.github.io/uAssets/filters/privacy.txt", true),
+        // Exceptions that keep sites working (consent dialogs, sign-ins, video players), as uBlock Origin has by default.
+        FilterList("ublock-unbreak", "uBlock filters: Unbreak", "https://ublockorigin.github.io/uAssets/filters/unbreak.txt", true),
+        FilterList("ublock-quick-fixes", "uBlock filters: Quick fixes", "https://ublockorigin.github.io/uAssets/filters/quick-fixes.txt", true),
         FilterList("easylist", "EasyList", "https://easylist.to/easylist/easylist.txt", true),
         FilterList("easyprivacy", "EasyPrivacy", "https://easylist.to/easylist/easyprivacy.txt", true),
         FilterList(

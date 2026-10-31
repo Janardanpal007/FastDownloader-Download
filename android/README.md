@@ -53,7 +53,7 @@ You need JDK 17 or newer, and the Android SDK with platform 37.0 and build-tools
 cd android
 ./gradlew assembleDebug          # debug build: app/build/outputs/apk/debug/
 ./gradlew assembleRelease        # release build, signed if keystore.properties exists
-
+npm run dist:android             # from the project root: release build copied to dist/Android/
 ```
 
 The app's version is read from the root `package.json`, so every platform shares one version number.

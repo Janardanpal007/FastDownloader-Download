@@ -1,5 +1,18 @@
 package com.fastdownloader.app.ui
 
+import androidx.compose.runtime.DisposableEffect
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import android.webkit.WebChromeClient
+import android.view.View
+import android.content.pm.ActivityInfo
+import android.content.ContextWrapper
+import android.content.Context
+import android.app.Activity
+import android.os.Build
+import android.content.res.Configuration
+import android.view.WindowManager
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.os.Handler
@@ -14,6 +27,11 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.border
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -22,6 +40,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -29,7 +48,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -173,6 +191,8 @@ fun BrowserScreen(visible: Boolean, onDownload: (AddRequest) -> Unit) {
     var loading by remember { mutableStateOf(false) }
     var blockedCount by remember { mutableIntStateOf(0) }
     var showMedia by remember { mutableStateOf(false) }
+    // A video the page put in full screen: its view and how to tell the page it has left full screen.
+    var fullScreen by remember { mutableStateOf<Pair<View, WebChromeClient.CustomViewCallback>?>(null) }
     val media = remember { mutableStateListOf<Media>() }
     val videosByFrame = remember { mutableStateMapOf<String, Int>() }
     var canBack by remember { mutableStateOf(false) }
@@ -275,7 +295,7 @@ fun BrowserScreen(visible: Boolean, onDownload: (AddRequest) -> Unit) {
 
                 override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
                     loading = true
-                    if (url != pageUrl) { media.clear(); blockedCount = 0; videosByFrame.clear() }
+                    if (url != pageUrl) { media.clear(); blockedCount = 0; videosByFrame.clear(); showMedia = false }
                     pageUrl = url
                     state.topUrl = url
                     address = url
@@ -297,6 +317,16 @@ fun BrowserScreen(visible: Boolean, onDownload: (AddRequest) -> Unit) {
                     canBack = view.canGoBack()
                 }
             }
+            webChromeClient = object : WebChromeClient() {
+                override fun onShowCustomView(view: View, callback: CustomViewCallback) {
+                    fullScreen?.second?.onCustomViewHidden()
+                    fullScreen = view to callback
+                }
+
+                override fun onHideCustomView() {
+                    fullScreen = null
+                }
+            }
             // Links the page offers as downloads come here instead of the system downloader.
             setDownloadListener { url, _, _, _, _ -> onDownload(AddRequest(url, headersFor(url, pageUrl))) }
             loadUrl(BROWSER_HOME)
@@ -304,9 +334,51 @@ fun BrowserScreen(visible: Boolean, onDownload: (AddRequest) -> Unit) {
     }
 
     BackHandler(enabled = visible && canBack) { web.goBack() }
+    BackHandler(enabled = fullScreen != null) { fullScreen?.second?.onCustomViewHidden(); fullScreen = null }
+
+    // Full-screen video covers the whole window, without status or navigation bars, turned to match the video.
+    DisposableEffect(fullScreen) {
+        val fs = fullScreen
+        val act = ctx.findActivity()
+        if (fs == null || act == null) return@DisposableEffect onDispose {}
+        val root = act.window.decorView as ViewGroup
+        val match = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        fs.first.setBackgroundColor(android.graphics.Color.BLACK)
+        root.addView(fs.first, match)
+        // The video is stretched to fill the whole screen, whatever its shape: nothing cropped, no black bars.
+        web.evaluateJavascript(FILL_SCREEN, null)
+        val bars = WindowCompat.getInsetsController(act.window, act.window.decorView)
+        bars.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        bars.hide(WindowInsetsCompat.Type.systemBars())
+        // Use the whole screen on every phone, including beside a notch or camera hole.
+        val cutout = if (Build.VERSION.SDK_INT >= 28) act.window.attributes.layoutInDisplayCutoutMode else 0
+        if (Build.VERSION.SDK_INT >= 28) {
+            act.window.attributes = act.window.attributes.apply {
+                layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            }
+        }
+        val orientation = act.requestedOrientation
+        val wasPortrait = act.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+        act.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+        // Upright videos (shorts, reels) stay upright.
+        web.evaluateJavascript(FULLSCREEN_SHAPE) { shape ->
+            if (fullScreen === fs && shape == "\"portrait\"") act.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+        }
+        onDispose {
+            root.removeView(fs.first)
+            bars.show(WindowInsetsCompat.Type.systemBars())
+            // Turn back the way the screen was (a phone lying flat wouldn't turn it by itself), then
+            // let the phone's own rotation setting take over again.
+            act.requestedOrientation = if (wasPortrait) ActivityInfo.SCREEN_ORIENTATION_PORTRAIT else ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            root.postDelayed({ if (fullScreen == null) act.requestedOrientation = orientation }, 1500)
+            if (Build.VERSION.SDK_INT >= 28) act.window.attributes = act.window.attributes.apply { layoutInDisplayCutoutMode = cutout }
+        }
+    }
 
     fun go(text: String) {
-        val t = text.trim()
+        val typed = text.trim()
+        val joined = typed.replace(Regex("""\.\s+"""), ".")
+        val t = if (!joined.contains(' ') && joined.contains('.')) joined else typed
         if (t.isEmpty()) return
         val url = when {
             Links.isMagnet(t) -> { onDownload(AddRequest(t)); return }
@@ -323,68 +395,71 @@ fun BrowserScreen(visible: Boolean, onDownload: (AddRequest) -> Unit) {
     val videoCount = videosByFrame.values.sum()
 
     Column(Modifier.fillMaxSize()) {
-        Row(Modifier.fillMaxWidth().background(c.panel).padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
+        // A compact address bar, so pages (and their cookie or terms dialogs) keep as much room as possible.
+        Row(Modifier.fillMaxWidth().background(c.panel).padding(horizontal = 6.dp, vertical = 5.dp), verticalAlignment = Alignment.CenterVertically) {
             IconBox(Icons.Back, "Back", tint = if (canBack) c.text else c.muted) { if (web.canGoBack()) web.goBack() }
-            Spacer(Modifier.width(6.dp))
-            OutlinedTextField(
-                value = address, onValueChange = { address = it }, modifier = Modifier.weight(1f), singleLine = true,
-                textStyle = Type.small.copy(color = c.text), colors = fieldColors(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri, imeAction = ImeAction.Go),
+            Spacer(Modifier.width(5.dp))
+            BasicTextField(
+                value = address, onValueChange = { address = it }, singleLine = true,
+                textStyle = Type.small.copy(color = c.text), cursorBrush = SolidColor(c.accent),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri, imeAction = ImeAction.Go, autoCorrectEnabled = false),
                 keyboardActions = KeyboardActions(onGo = { go(address) }),
+                modifier = Modifier.weight(1f).height(40.dp).border(1.dp, c.border).padding(horizontal = 10.dp)
+                    .wrapContentHeight(Alignment.CenterVertically),
             )
-            Spacer(Modifier.width(6.dp))
-            // Shield: ad blocking on this site (tap to turn it off or on for the site).
-            IconBox(
-                Icons.Shield, "Ad blocking on this site",
-                tint = if (!appSettings.blockAds || siteAllowed) c.muted else c.ok,
-            ) {
-                if (!appSettings.blockAds) {
-                    Toast.makeText(ctx, "Ad blocking is off in Settings › Privacy", Toast.LENGTH_SHORT).show()
-                } else if (host.isNotEmpty()) {
-                    Engine.updateSettings { s ->
-                        s.copy(adblockAllow = if (siteAllowed) s.adblockAllow.filterNot { host == it || host.endsWith(".$it") } else s.adblockAllow + host)
-                    }
-                    Toast.makeText(ctx, if (siteAllowed) "Blocking ads on $host" else "Ads allowed on $host", Toast.LENGTH_SHORT).show()
-                    web.reload()
+            Spacer(Modifier.width(5.dp))
+            // Download, with the number of videos on the page. With no video but media files the page
+            // loaded, it lists those files instead.
+            Box {
+                IconBox(
+                    Icons.Download, if (videoCount > 0) "Download ($videoCount videos on this page)" else "Download",
+                    tint = if (videoCount > 0 || media.isNotEmpty()) c.accent else c.muted,
+                ) {
+                    if (videoCount == 0 && media.isNotEmpty()) showMedia = !showMedia
+                    else onDownload(AddRequest(pageUrl, headersFor(pageUrl, pageUrl)))
+                }
+                if (videoCount > 0) {
+                    Text(
+                        "$videoCount", style = Type.label.copy(fontSize = 9.sp), color = c.solidFg,
+                        modifier = Modifier.align(Alignment.TopEnd).background(c.accent).padding(horizontal = 3.dp),
+                    )
                 }
             }
-            Spacer(Modifier.width(6.dp))
+            Spacer(Modifier.width(5.dp))
+            // Shield with the number blocked: ad blocking on this site (tap to turn it off or on for the site).
+            Box {
+                IconBox(
+                    Icons.Shield, "Ad blocking on this site ($blockedCount blocked)",
+                    tint = if (!appSettings.blockAds || siteAllowed) c.muted else c.ok,
+                ) {
+                    if (!appSettings.blockAds) {
+                        Toast.makeText(ctx, "Ad blocking is off in Settings › Privacy", Toast.LENGTH_SHORT).show()
+                    } else if (host.isNotEmpty()) {
+                        Engine.updateSettings { s ->
+                            s.copy(adblockAllow = if (siteAllowed) s.adblockAllow.filterNot { host == it || host.endsWith(".$it") } else s.adblockAllow + host)
+                        }
+                        Toast.makeText(
+                            ctx,
+                            if (siteAllowed) "Blocking ads on $host" else "Ads allowed on $host ($blockedCount were blocked)",
+                            Toast.LENGTH_SHORT,
+                        ).show()
+                        web.reload()
+                    }
+                }
+                if (appSettings.blockAds && !siteAllowed && blockedCount > 0) {
+                    Text(
+                        if (blockedCount > 99) "99+" else "$blockedCount",
+                        style = Type.label.copy(fontSize = 9.sp), color = c.solidFg,
+                        modifier = Modifier.align(Alignment.TopEnd).background(c.solidBg).padding(horizontal = 3.dp),
+                    )
+                }
+            }
+            Spacer(Modifier.width(5.dp))
             IconBox(if (loading) Icons.Close else Icons.Refresh, "Reload") { if (loading) web.stopLoading() else web.reload() }
         }
         Divider()
         Box(Modifier.weight(1f).fillMaxWidth()) {
             AndroidView(factory = { (web.parent as? ViewGroup)?.removeView(web); web }, modifier = Modifier.fillMaxSize())
-        }
-        Divider()
-        // Download bar: videos on this page (each also has its own Download button), files it loaded, ads blocked.
-        Row(Modifier.fillMaxWidth().background(c.panel).padding(horizontal = 12.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-            Column(Modifier.weight(1f)) {
-                Label(
-                    when {
-                        videoCount == 1 -> "1 video on this page"
-                        videoCount > 1 -> "$videoCount videos on this page"
-                        media.isNotEmpty() -> "${media.size} media files found"
-                        else -> "No video found yet"
-                    },
-                    color = if (videoCount > 0 || media.isNotEmpty()) c.accent else c.muted,
-                )
-                Text(
-                    when {
-                        !appSettings.blockAds -> "Ad blocking is off"
-                        siteAllowed -> "Ads allowed on this site"
-                        filters.loading && Filters.engine == null -> "Loading uBlock filter lists…"
-                        else -> "$blockedCount ads and trackers blocked"
-                    },
-                    style = Type.small, color = c.muted, maxLines = 1,
-                )
-            }
-            if (media.isNotEmpty()) {
-                LineButton("Files") { showMedia = !showMedia }
-                Spacer(Modifier.width(8.dp))
-            }
-            SolidButton("Download", icon = Icons.Download) {
-                onDownload(AddRequest(pageUrl, headersFor(pageUrl, pageUrl)))
-            }
         }
         if (showMedia && media.isNotEmpty()) {
             Divider()
@@ -409,4 +484,22 @@ fun BrowserScreen(visible: Boolean, onDownload: (AddRequest) -> Unit) {
             }
         }
     }
+}
+
+/** "portrait" or "landscape" for the video now in full screen ("" when it's in a frame the page can't see into). */
+private const val FULLSCREEN_SHAPE = """(function(){var e=document.fullscreenElement||document.webkitFullscreenElement;
+var v=e&&(e.tagName==='VIDEO'?e:e.querySelector('video'));
+return v&&v.videoWidth?(v.videoHeight>v.videoWidth?'portrait':'landscape'):'';})()"""
+
+/** Stretches the page's full-screen video to fill the whole screen. */
+private const val FILL_SCREEN =
+    "(function(){if(document.getElementById('__fdFill'))return;var s=document.createElement('style');s.id='__fdFill';" +
+        "s.textContent=':fullscreen video,:-webkit-full-screen video,video:fullscreen,video:-webkit-full-screen{" +
+        "position:fixed!important;left:0!important;top:0!important;width:100vw!important;height:100vh!important;" +
+        "object-fit:fill!important;transform:none!important}';(document.head||document.documentElement).appendChild(s);})()"
+
+private tailrec fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
 }

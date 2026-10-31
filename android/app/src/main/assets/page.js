@@ -142,12 +142,12 @@
   var root = host.attachShadow ? host.attachShadow({ mode: 'closed' }) : host;
   var css = document.createElement('style');
   css.textContent =
-    '.b{position:fixed;display:flex;align-items:center;gap:6px;padding:7px 11px 7px 9px;background:#0e1116;color:#fff;' +
-    'border:1px solid rgba(255,255,255,.55);font:700 11px/1 "JetBrains Mono",ui-monospace,monospace;letter-spacing:.1em;' +
-    'text-transform:uppercase;box-shadow:0 4px 14px rgba(0,0,0,.4);cursor:pointer;-webkit-tap-highlight-color:transparent;' +
-    'user-select:none;opacity:.92}' +
-    '.b:active{background:#1d7fe6}' +
-    '.b svg{width:14px;height:14px;fill:#fff}';
+    // A small round dot with the app's icon, so it hides as little of the video as possible.
+    '.b{position:fixed;display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;' +
+    'background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.45);cursor:pointer;-webkit-tap-highlight-color:transparent;' +
+    'user-select:none;opacity:.9}' +
+    '.b:active{transform:scale(.9);opacity:1}' +
+    '.b svg{width:22px;height:22px}';
   root.appendChild(css);
   var buttons = []; // { video, el }
   var lastCount = -1;
@@ -157,17 +157,21 @@
     var el = document.createElement('div');
     el.className = 'b';
     el.setAttribute('role', 'button');
+    el.setAttribute('aria-label', 'Download with FastDownloader');
+    el.title = 'Download with FastDownloader';
     // Built with DOM calls, not innerHTML: sites like YouTube only allow "Trusted Types" HTML.
     var NS = 'http://www.w3.org/2000/svg';
     var svg = document.createElementNS(NS, 'svg');
     svg.setAttribute('viewBox', '0 0 24 24');
-    var path = document.createElementNS(NS, 'path');
-    path.setAttribute('d', 'M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z');
-    svg.appendChild(path);
-    var label = document.createElement('span');
-    label.textContent = 'Download';
+    // The app icon: a light blue arrow down and a blue arrow up.
+    [['#2f7cf6', '16.5,3 22,9 19,9 19,18 9,18 9,14 14,14 14,9 11,9'],
+     ['#3cc6f0', '5,6 15,6 15,10 10,10 10,15 13,15 7.5,21 2,15 5,15']].forEach(function (a) {
+      var p = document.createElementNS(NS, 'polygon');
+      p.setAttribute('fill', a[0]);
+      p.setAttribute('points', a[1]);
+      svg.appendChild(p);
+    });
     el.appendChild(svg);
-    el.appendChild(label);
     el.addEventListener('click', function (ev) {
       if (!ev.isTrusted) return;
       ev.preventDefault();
@@ -216,8 +220,9 @@
       shown++;
       b.el.style.display = 'flex';
       b.el.style.top = Math.max(8, r.top + 8) + 'px';
-      b.el.style.left = 'auto';
-      b.el.style.right = Math.max(8, innerWidth - r.right + 8) + 'px';
+      // Top left: players keep their own controls (settings, captions) at the top right.
+      b.el.style.left = Math.max(8, r.left + 8) + 'px';
+      b.el.style.right = 'auto';
     }
     var count = buttons.length;
     if (count !== lastCount || location.href !== lastHref) {

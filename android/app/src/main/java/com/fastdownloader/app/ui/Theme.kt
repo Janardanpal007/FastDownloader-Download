@@ -8,6 +8,13 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.mandatorySystemGestures
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -189,3 +196,11 @@ fun Section(label: String, content: @Composable () -> Unit) {
         Column(Modifier.fillMaxWidth().border(1.dp, colors.border).background(colors.panel)) { content() }
     }
 }
+
+/**
+ * Space for the navigation bar. Some phones (e.g. Realme's own swipe gestures) draw a gesture handle
+ * but report no navigation bar, so the bottom gesture area counts too.
+ */
+@Composable
+fun Modifier.bottomBarsPadding(): Modifier =
+    windowInsetsPadding(WindowInsets.navigationBars.union(WindowInsets.mandatorySystemGestures.only(WindowInsetsSides.Bottom)))

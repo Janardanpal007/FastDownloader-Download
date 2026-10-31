@@ -30,7 +30,9 @@ android {
         minSdk = 26 // Android 8.0
         targetSdk = 37 // Android 17
         versionCode = vMajor * 10000 + vMinor * 100 + vPatch
-        versionName = appVersion
+        // -PfdVersionOverride=1.0.0 makes the app call itself older (same versionCode, so it installs
+        // over the real one and keeps its data), to try the update check.
+        versionName = providers.gradleProperty("fdVersionOverride").orNull ?: appVersion
     }
 
     signingConfigs {

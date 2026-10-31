@@ -75,6 +75,10 @@ data class Settings(
     val adblockAllow: List<String> = emptyList(),
     val keepHistory: Boolean = true,
     val userName: String = "",
+    /** Look for a newer FastDownloader every few hours and notify. */
+    val checkUpdates: Boolean = true,
+    /** The newest version already announced with a notification. */
+    val updateNotified: String = "",
 ) {
     val proxyOn get() = proxyType != "none" && proxyHost.isNotBlank() && proxyPort in 1..65535
 }

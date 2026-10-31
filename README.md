@@ -16,16 +16,16 @@ Multi-connection downloads · pause &amp; resume · videos from websites · torr
 
 | System | File | |
 |---|---|---|
-| **Windows 10 / 11** | `FastDownloader-Setup-1.1.0.exe` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-Setup-1.1.0.exe) |
-| **Mac with Apple Silicon** (M1–M4) | `FastDownloader-1.1.0-arm64.dmg` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.1.0-arm64.dmg) |
-| **Mac with Intel** | `FastDownloader-1.1.0-x64.dmg` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.1.0-x64.dmg) |
-| **Linux** (any distribution) | `FastDownloader-1.1.0.AppImage` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.1.0.AppImage) |
-| **Linux** (Ubuntu / Debian) | `FastDownloader-1.1.0.deb` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.1.0.deb) |
-| **Android 8.0 – 17** (almost every phone) | `FastDownloader-1.1.0-android-arm64.apk` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.1.0-android-arm64.apk) |
-| **Android** (older 32-bit phones) | `FastDownloader-1.1.0-android-arm.apk` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.1.0-android-arm.apk) |
-| **Android** (any device, larger) | `FastDownloader-1.1.0-android-universal.apk` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.1.0-android-universal.apk) |
-| **Browser extension** (Chrome, Edge, Brave, Opera, Vivaldi) | `FastDownloader-Extension-Chrome-Edge-Opera-1.6.0.zip` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-Extension-Chrome-Edge-Opera-1.6.0.zip) |
-| **Browser extension** (Firefox) | `FastDownloader-Extension-Firefox-1.6.0.zip` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-Extension-Firefox-1.6.0.zip) |
+| **Windows 10 / 11** | `FastDownloader-Setup-1.2.0.exe` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-Setup-1.2.0.exe) |
+| **Mac with Apple Silicon** (M1–M4) | `FastDownloader-1.2.0-arm64.dmg` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.2.0-arm64.dmg) |
+| **Mac with Intel** | `FastDownloader-1.2.0-x64.dmg` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.2.0-x64.dmg) |
+| **Linux** (any distribution) | `FastDownloader-1.2.0.AppImage` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.2.0.AppImage) |
+| **Linux** (Ubuntu / Debian) | `FastDownloader-1.2.0.deb` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.2.0.deb) |
+| **Android 8.0 – 17** (almost every phone) | `FastDownloader-1.2.0-android-arm64.apk` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.2.0-android-arm64.apk) |
+| **Android** (older 32-bit phones) | `FastDownloader-1.2.0-android-arm.apk` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.2.0-android-arm.apk) |
+| **Android** (any device, larger) | `FastDownloader-1.2.0-android-universal.apk` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.2.0-android-universal.apk) |
+| **Browser extension** (Chrome, Edge, Brave, Opera, Vivaldi) | `FastDownloader-Extension-Chrome-Edge-Opera-1.6.1.zip` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-Extension-Chrome-Edge-Opera-1.6.1.zip) |
+| **Browser extension** (Firefox) | `FastDownloader-Extension-Firefox-1.6.1.zip` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-Extension-Firefox-1.6.1.zip) |
 
 Not sure which Mac you have? Apple menu  → **About This Mac**: "Chip: Apple M…" means Apple Silicon; "Processor: Intel…" means Intel.
 
@@ -43,7 +43,7 @@ Not sure which Mac you have? Apple menu  → **About This Mac**: "Chip: Apple M�
 ## Installing
 
 ### Windows
-1. Run `FastDownloader-Setup-1.1.0.exe`.
+1. Run `FastDownloader-Setup-1.2.0.exe`.
 2. If Windows shows **"Windows protected your PC"**, click **More info → Run anyway**. This appears because the app isn't code-signed yet; it isn't a virus warning.
 3. Follow the installer. FastDownloader starts and sits in the system tray (next to the clock).
 
@@ -60,8 +60,8 @@ Not sure which Mac you have? Apple menu  → **About This Mac**: "Chip: Apple M�
 4. The FastDownloader icon appears in the **menu bar** at the top right.
 
 ### Linux
-- **AppImage:** `chmod +x FastDownloader-1.1.0.AppImage`, then double-click it or run `./FastDownloader-1.1.0.AppImage`.
-- **Ubuntu / Debian:** `sudo apt install ./FastDownloader-1.1.0.deb`
+- **AppImage:** `chmod +x FastDownloader-1.2.0.AppImage`, then double-click it or run `./FastDownloader-1.2.0.AppImage`.
+- **Ubuntu / Debian:** `sudo apt install ./FastDownloader-1.2.0.deb`
 
 ### Android
 1. Download the APK on your phone (arm64 for almost every phone; the universal one works everywhere) and open it.
@@ -73,7 +73,7 @@ Android 8 to 10 ask once for storage permission. Files are saved in `Download/Fa
 
 ### Browser extension
 **Chrome, Edge, Brave, Opera, Vivaldi**
-1. Unzip `FastDownloader-Extension-Chrome-Edge-Opera-1.6.0.zip` into a folder you'll keep (for example *Documents/FastDownloader-extension*).
+1. Unzip `FastDownloader-Extension-Chrome-Edge-Opera-1.6.1.zip` into a folder you'll keep (for example *Documents/FastDownloader-extension*).
 2. Open the browser's extensions page (`chrome://extensions`, `edge://extensions`, `brave://extensions`, `opera://extensions`…) and switch on **Developer mode**.
 3. Click **Load unpacked** and choose the unzipped folder.
 4. Click the **puzzle-piece icon** next to the address bar and **pin** FastDownloader. With the app running, its popup says **Connected**.
@@ -105,8 +105,8 @@ illegal in most countries. DRM-protected services (Netflix, Prime Video, Disney+
 
 Each release includes `SHA256SUMS.txt`. Compare it with the checksum of your file:
 
-- **Windows (PowerShell):** `Get-FileHash .\FastDownloader-Setup-1.1.0.exe -Algorithm SHA256`
-- **macOS / Linux:** `shasum -a 256 FastDownloader-1.1.0-arm64.dmg`
+- **Windows (PowerShell):** `Get-FileHash .\FastDownloader-Setup-1.2.0.exe -Algorithm SHA256`
+- **macOS / Linux:** `shasum -a 256 FastDownloader-1.2.0-arm64.dmg`
 
 ## Problems or ideas?
 
