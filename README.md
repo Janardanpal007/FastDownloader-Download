@@ -63,6 +63,9 @@ Not sure which Mac you have? Apple menu  â†’ **About This Mac**: "Chip: Apple Mâ
 ### Linux
 - **AppImage:** `chmod +x FastDownloader-1.3.0.AppImage`, then double-click it or run `./FastDownloader-1.3.0.AppImage`.
 - **Ubuntu / Debian:** `sudo apt install ./FastDownloader-1.3.0.deb`
+- **AppImage doesn't open?** On Ubuntu 22.04 and newer, the .deb is the easiest choice. To use the AppImage there:
+  - If it says **"AppImages require FUSE to run"**, run `sudo apt install libfuse2` (on Ubuntu 24.04: `sudo apt install libfuse2t64`).
+  - If it closes straight away or mentions the **sandbox** (Ubuntu 24.04 and newer), start it with `./FastDownloader-1.3.0.AppImage --no-sandbox`.
 
 ### Android
 1. Download the APK on your phone (arm64 for almost every phone; the universal one works everywhere) and open it.
