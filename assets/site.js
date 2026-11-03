@@ -1,10 +1,11 @@
-// FastDownloader download page: fills in the newest release's files and sizes,
-// points the main button at the visitor's system, and wires the share buttons.
+// FastDownloader download page: fills in each system's newest files and sizes (Android and the desktop app are
+// released separately, so they can come from different releases), points the main button at the visitor's
+// system, and wires the share buttons.
 (function () {
   'use strict';
 
   var REPO = 'Janardanpal007/FastDownloader-Download';
-  var LATEST = 'https://github.com/' + REPO + '/releases/latest';
+  var RELEASES = 'https://github.com/' + REPO + '/releases';
   var PAGE = 'https://janardanpal007.github.io/FastDownloader-Download/';
 
   // Which release file belongs to which button.
@@ -44,14 +45,22 @@
     for (var i = 0; i < cards.length; i++) cards[i].classList.add('mine');
   }
 
-  function setAssets(release) {
-    var version = (release.tag_name || '').replace(/^v/, '');
+  // Releases come newest first: each button takes its file from the newest release that has one.
+  function setAssets(releases) {
     var files = {};
-    (release.assets || []).forEach(function (a) {
-      Object.keys(MATCH).forEach(function (key) {
-        if (MATCH[key].test(a.name)) files[key] = a;
+    var versions = {};
+    releases.filter(function (r) { return !r.draft && !r.prerelease; }).forEach(function (release) {
+      (release.assets || []).forEach(function (a) {
+        Object.keys(MATCH).forEach(function (key) {
+          if (!files[key] && MATCH[key].test(a.name)) {
+            files[key] = a;
+            versions[key] = (release.tag_name || '').replace(/^v/, '');
+          }
+        });
       });
     });
+    var mainKey = { windows: 'windows', mac: 'mac-arm', linux: 'appimage', android: 'android-arm64' }[os] || 'windows';
+    var version = versions[mainKey] || '';
     Object.keys(files).forEach(function (key) {
       var links = document.querySelectorAll('[data-asset="' + key + '"]');
       for (var i = 0; i < links.length; i++) links[i].href = files[key].browser_download_url;
@@ -74,13 +83,16 @@
     }
   }
 
-  fetch('https://api.github.com/repos/' + REPO + '/releases/latest', { headers: { Accept: 'application/vnd.github+json' } })
+  var allFiles = document.getElementById('all-files');
+  if (allFiles) allFiles.href = RELEASES;
+
+  fetch('https://api.github.com/repos/' + REPO + '/releases?per_page=20', { headers: { Accept: 'application/vnd.github+json' } })
     .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
     .then(setAssets)
     .catch(function () {
       // Offline or rate-limited: every button still leads to the releases page.
       var links = document.querySelectorAll('[data-asset]');
-      for (var i = 0; i < links.length; i++) links[i].href = LATEST;
+      for (var i = 0; i < links.length; i++) links[i].href = RELEASES;
     });
 
   // Share buttons
