@@ -16,14 +16,14 @@ Multi-connection downloads · pause &amp; resume · videos from websites · torr
 
 | System | File | |
 |---|---|---|
-| **Windows 10 / 11** | `FastDownloader-Setup-1.3.0.exe` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-Setup-1.3.0.exe) |
-| **Mac with Apple Silicon** (M1–M4) | `FastDownloader-1.3.0-arm64.dmg` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.3.0-arm64.dmg) |
-| **Mac with Intel** | `FastDownloader-1.3.0-x64.dmg` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.3.0-x64.dmg) |
-| **Linux** (any distribution) | `FastDownloader-1.3.0.AppImage` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.3.0.AppImage) |
-| **Linux** (Ubuntu / Debian) | `FastDownloader-1.3.0.deb` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.3.0.deb) |
-| **Android 8.0 – 17** (almost every phone) | `FastDownloader-1.3.0-android-arm64.apk` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.3.0-android-arm64.apk) |
-| **Android** (older 32-bit phones) | `FastDownloader-1.3.0-android-arm.apk` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.3.0-android-arm.apk) |
-| **Android** (any device, larger) | `FastDownloader-1.3.0-android-universal.apk` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.3.0-android-universal.apk) |
+| **Windows 10 / 11** | `FastDownloader-Setup-1.3.0.exe` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/download/v1.3.0/FastDownloader-Setup-1.3.0.exe) |
+| **Mac with Apple Silicon** (M1–M4) | `FastDownloader-1.3.0-arm64.dmg` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/download/v1.3.0/FastDownloader-1.3.0-arm64.dmg) |
+| **Mac with Intel** | `FastDownloader-1.3.0-x64.dmg` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/download/v1.3.0/FastDownloader-1.3.0-x64.dmg) |
+| **Linux** (any distribution) | `FastDownloader-1.3.0.AppImage` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/download/v1.3.0/FastDownloader-1.3.0.AppImage) |
+| **Linux** (Ubuntu / Debian) | `FastDownloader-1.3.0.deb` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/download/v1.3.0/FastDownloader-1.3.0.deb) |
+| **Android 8.0 – 17** (almost every phone) | `FastDownloader-1.3.1-android-arm64.apk` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.3.1-android-arm64.apk) |
+| **Android** (older 32-bit phones) | `FastDownloader-1.3.1-android-arm.apk` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.3.1-android-arm.apk) |
+| **Android** (any device, larger) | `FastDownloader-1.3.1-android-universal.apk` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.3.1-android-universal.apk) |
 | **Browser extension** (Chrome, Edge, Brave, Opera, Vivaldi) | `FastDownloader-Extension-Chrome-Edge-Opera-1.6.1.zip` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-Extension-Chrome-Edge-Opera-1.6.1.zip) |
 | **Browser extension** (Firefox) | `FastDownloader-Extension-Firefox-1.6.1.zip` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-Extension-Firefox-1.6.1.zip) |
 
