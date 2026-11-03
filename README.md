@@ -7,7 +7,8 @@ Multi-connection downloads · pause &amp; resume · videos from websites · torr
 
 <p align="center">
   <a href="https://janardanpal007.github.io/FastDownloader-Download/"><b>🌐 Website</b></a> &nbsp;·&nbsp;
-  <a href="https://github.com/Janardanpal007/FastDownloader-Download/releases/latest"><b>⬇ Download the latest version</b></a>
+  <a href="https://github.com/Janardanpal007/FastDownloader-Download/releases/tag/v1.3.0"><b>⬇ Windows · macOS · Linux (1.3.0)</b></a> &nbsp;·&nbsp;
+  <a href="https://github.com/Janardanpal007/FastDownloader-Download/releases/tag/v1.3.1"><b>⬇ Android (1.3.1)</b></a>
 </p>
 
 ![FastDownloader main window](images/main-window.png)
