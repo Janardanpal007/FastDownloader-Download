@@ -256,7 +256,9 @@
           <summary>Linux</summary>
           <ol>
             <li>AppImage: <code>chmod +x FastDownloader-*.AppImage</code>, then open it.</li>
-            <li>Ubuntu / Debian: <code>sudo apt install ./FastDownloader-*.deb</code></li>
+            <li>Ubuntu / Debian: <code>sudo apt install ./FastDownloader-*.deb</code> (the easiest choice on Ubuntu 22.04 and newer).</li>
+            <li>AppImage says "AppImages require FUSE to run": run <code>sudo apt install libfuse2</code> (Ubuntu 24.04: <code>libfuse2t64</code>).</li>
+            <li>AppImage closes straight away or mentions the sandbox (Ubuntu 24.04 and newer): start it with <code>./FastDownloader-*.AppImage --no-sandbox</code>.</li>
           </ol>
         </details>
         <details open>
