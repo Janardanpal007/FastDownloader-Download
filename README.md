@@ -2,13 +2,11 @@
 
 <h1 align="center">FastDownloader</h1>
 
-<p align="center">A fast, modern download manager for <b>Windows, macOS, Linux and Android</b>.<br>
 Multi-connection downloads · pause &amp; resume · videos from websites · torrents · browser extension · privacy built in</p>
 
 <p align="center">
   <a href="https://janardanpal007.github.io/FastDownloader-Download/"><b>🌐 Website</b></a> &nbsp;·&nbsp;
   <a href="https://github.com/Janardanpal007/FastDownloader-Download/releases/tag/v1.3.0"><b>⬇ Windows · macOS · Linux (1.3.0)</b></a> &nbsp;·&nbsp;
-  <a href="https://github.com/Janardanpal007/FastDownloader-Download/releases/tag/v1.3.4"><b>⬇ Android (1.3.4)</b></a>
 </p>
 
 ![FastDownloader main window](images/main-window.png)
@@ -22,9 +20,6 @@ Multi-connection downloads · pause &amp; resume · videos from websites · torr
 | **Mac with Intel** | `FastDownloader-1.3.0-x64.dmg` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/download/v1.3.0/FastDownloader-1.3.0-x64.dmg) |
 | **Linux** (any distribution) | `FastDownloader-1.3.0.AppImage` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/download/v1.3.0/FastDownloader-1.3.0.AppImage) |
 | **Linux** (Ubuntu / Debian) | `FastDownloader-1.3.0.deb` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/download/v1.3.0/FastDownloader-1.3.0.deb) |
-| **Android 8.0 – 17** (almost every phone) | `FastDownloader-1.3.4-android-arm64.apk` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.3.4-android-arm64.apk) |
-| **Android** (older 32-bit phones) | `FastDownloader-1.3.4-android-arm.apk` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.3.4-android-arm.apk) |
-| **Android** (any device, larger) | `FastDownloader-1.3.4-android-universal.apk` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-1.3.4-android-universal.apk) |
 | **Browser extension** (Chrome, Edge, Brave, Opera, Vivaldi) | `FastDownloader-Extension-Chrome-Edge-Opera-1.6.1.zip` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-Extension-Chrome-Edge-Opera-1.6.1.zip) |
 | **Browser extension** (Firefox) | `FastDownloader-Extension-Firefox-1.6.1.zip` | [Download](https://github.com/Janardanpal007/FastDownloader-Download/releases/latest/download/FastDownloader-Extension-Firefox-1.6.1.zip) |
 
@@ -67,13 +62,6 @@ Not sure which Mac you have? Apple menu  → **About This Mac**: "Chip: Apple M�
   - If it says **"AppImages require FUSE to run"**, run `sudo apt install libfuse2` (on Ubuntu 24.04: `sudo apt install libfuse2t64`).
   - If it closes straight away or mentions the **sandbox** (Ubuntu 24.04 and newer), start it with `./FastDownloader-1.3.0.AppImage --no-sandbox`.
 
-### Android
-1. Download the APK on your phone (arm64 for almost every phone; the universal one works everywhere) and open it.
-2. The first time, Android asks to allow installs from your browser: tap **Settings**, turn on **Allow from this source**, go back and tap **Install**.
-3. Open FastDownloader and allow notifications, so downloads can show progress in the background.
-4. The app opens on its **Browser** tab (YouTube). Every video gets a **Download** button, and ads are blocked with uBlock Origin's filter lists, including YouTube's video ads. To download a link from Chrome or any other app, tap **Share** and pick **FastDownloader**.
-
-Android 8 to 10 ask once for storage permission. Files are saved in `Download/FastDownloader/`.
 
 ### Browser extension
 **Chrome, Edge, Brave, Opera, Vivaldi**
@@ -115,7 +103,6 @@ Each release includes `SHA256SUMS.txt`. Compare it with the checksum of your fil
 ## Problems or ideas?
 
 Open an [issue](https://github.com/Janardanpal007/FastDownloader-Download/issues) and describe what happened,
-including your system (Windows / macOS / Linux / Android version) and, if possible, a screenshot.
 
 ## Licence
 
