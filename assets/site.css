@@ -209,6 +209,9 @@ code{font:13px var(--mono);background:#060a0e;border:1px solid var(--line);paddi
 .footer nav{display:flex;flex-wrap:wrap;gap:22px;color:#b6c2cd}
 .footer nav a:hover{color:var(--cyan)}
 .footer small{color:var(--dim);font-size:13px}
+.footer .socials{gap:16px}
+.footer .socials a{display:inline-flex;align-items:center;gap:7px}
+.footer .socials svg{width:18px;height:18px;fill:currentColor}
 
 /* Screenshot dialog */
 dialog{border:1px solid var(--line2);border-radius:14px;background:#0f171f;color:var(--ink);padding:16px;width:min(1100px,calc(100% - 24px));box-shadow:0 30px 100px #000c}
