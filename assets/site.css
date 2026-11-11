@@ -268,3 +268,15 @@ dialog img{border-radius:8px;margin:auto;max-height:80svh;width:auto}
   *,*:before,*:after{animation:none!important;transition:none!important}
   .btn:hover,.card:hover{transform:none}
 }
+
+.cmp-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);-webkit-overflow-scrolling:touch}
+.cmp{width:100%;min-width:760px;border-collapse:collapse;font-size:14px}
+.cmp th,.cmp td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+.cmp thead th{font:500 12px/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--cyan);white-space:nowrap}
+.cmp thead a{color:inherit}
+.cmp tbody th{font-weight:500;color:var(--ink)}
+.cmp tbody tr:last-child>*{border-bottom:0}
+.cmp-y{color:var(--ink)}
+.cmp-n,.cmp-p,.cmp-q{color:var(--muted)}
+.cmp-q{color:var(--dim)}
+.cmp-note{margin:16px 0 0;color:var(--muted);font-size:14px;max-width:760px}

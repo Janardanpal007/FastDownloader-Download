@@ -17,7 +17,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#090d12">
 <link rel="icon" href="images/icon.png">
-<link rel="stylesheet" href="assets/site.css?v=4.0">
+<link rel="stylesheet" href="assets/site.css?v=4.1">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -60,13 +60,13 @@
 <header class="header">
   <div class="wrap nav">
     <a class="brand" href="#top"><img src="images/web/icon.webp" width="30" height="30" alt="">FastDownloader</a>
-    <nav class="nav-links" aria-label="Main"><a href="#features">Features</a><a href="#video">Video</a><a href="#extension">Extension</a><a href="#privacy">Privacy</a><a href="#install">Install</a></nav>
+    <nav class="nav-links" aria-label="Main"><a href="#features">Features</a><a href="#video">Video</a><a href="#extension">Extension</a><a href="#privacy">Privacy</a><a href="#compare">Compare</a><a href="#install">Install</a></nav>
     <div class="nav-right">
       <a class="btn small" href="#download">Get the app</a>
       <button class="menu-toggle" id="menu-toggle" aria-label="Menu" aria-expanded="false" aria-controls="mobile-nav"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
     </div>
   </div>
-  <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile" hidden><a href="#features">Features</a><a href="#video">Video</a><a href="#extension">Extension</a><a href="#privacy">Privacy</a><a href="#download">Download</a><a href="#install">Install</a><a href="#faq">Questions</a></nav>
+  <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile" hidden><a href="#features">Features</a><a href="#video">Video</a><a href="#extension">Extension</a><a href="#privacy">Privacy</a><a href="#download">Download</a><a href="#compare">Compare</a><a href="#install">Install</a><a href="#faq">Questions</a></nav>
 </header>
 
 <main id="main">
@@ -253,6 +253,42 @@
       </div>
       <p class="notice">Please download only what you have the right to. Many video sites’ terms, including YouTube’s, don’t allow downloading, and DRM-protected services aren’t supported.</p>
     </div>
+  </section>
+
+  <section class="section wrap" id="compare">
+    <div class="section-head">
+      <div><div class="eyebrow">Comparison</div><h2>How it compares.<br><em>Honestly.</em></h2></div>
+      <p>FastDownloader cells come from the app's source. A "?" means we have not verified that cell.</p>
+    </div>
+    <div class="cmp-wrap" tabindex="0" role="region" aria-label="Feature comparison table, scrolls sideways on small screens">
+      <table class="cmp">
+        <thead><tr><th scope="col">Feature</th><th scope="col">FastDownloader</th><th scope="col"><a href="https://github.com/anefzaoui/misterdownloadmanager">Mister Download Manager</a></th><th scope="col">Internet Download Manager (IDM)</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Free and open source</th><td class="cmp-y">✓ MIT</td><td class="cmp-q">? (public repo)</td><td class="cmp-n">✗ Proprietary</td></tr>
+          <tr><th scope="row">Price</th><td class="cmp-y">Free</td><td class="cmp-q">?</td><td class="cmp-p">Paid, about $25/yr or lifetime</td></tr>
+          <tr><th scope="row">Platforms</th><td class="cmp-y">Windows, macOS, Linux, Android</td><td class="cmp-q">?</td><td class="cmp-p">Windows only</td></tr>
+          <tr><th scope="row">Multi-connection downloads</th><td class="cmp-y">✓ Up to 32</td><td class="cmp-q">?</td><td class="cmp-y">✓</td></tr>
+          <tr><th scope="row">Resume</th><td class="cmp-y">✓ Also after restart</td><td class="cmp-q">?</td><td class="cmp-y">✓</td></tr>
+          <tr><th scope="row">Browser extension</th><td class="cmp-y">✓ Chrome, Edge, Brave, Opera, Vivaldi, Firefox</td><td class="cmp-q">?</td><td class="cmp-y">✓</td></tr>
+          <tr><th scope="row">Video and site downloads (yt-dlp)</th><td class="cmp-y">✓ yt-dlp</td><td class="cmp-q">?</td><td class="cmp-p">partial: own video grabber, not yt-dlp</td></tr>
+          <tr><th scope="row">Playlists and subtitles</th><td class="cmp-y">✓</td><td class="cmp-q">?</td><td class="cmp-q">?</td></tr>
+          <tr><th scope="row">Torrents and magnet links</th><td class="cmp-y">✓</td><td class="cmp-q">?</td><td class="cmp-n">✗</td></tr>
+          <tr><th scope="row">RSS feeds</th><td class="cmp-y">✓</td><td class="cmp-q">?</td><td class="cmp-q">?</td></tr>
+          <tr><th scope="row">Scheduler</th><td class="cmp-y">✓</td><td class="cmp-q">?</td><td class="cmp-y">✓</td></tr>
+          <tr><th scope="row">Speed limit per download</th><td class="cmp-y">✓</td><td class="cmp-q">?</td><td class="cmp-q">?</td></tr>
+          <tr><th scope="row">7z and RAR extraction</th><td class="cmp-y">✓</td><td class="cmp-q">?</td><td class="cmp-q">?</td></tr>
+          <tr><th scope="row">Encrypted DNS and proxy</th><td class="cmp-y">✓ DoH and proxy</td><td class="cmp-q">?</td><td class="cmp-q">?</td></tr>
+          <tr><th scope="row">Local API and CLI</th><td class="cmp-y">✓</td><td class="cmp-q">?</td><td class="cmp-q">?</td></tr>
+          <tr><th scope="row">Phone remote</th><td class="cmp-y">✓ LAN web page</td><td class="cmp-q">?</td><td class="cmp-q">?</td></tr>
+          <tr><th scope="row">Headless / Docker server</th><td class="cmp-y">✓</td><td class="cmp-q">?</td><td class="cmp-n">✗</td></tr>
+          <tr><th scope="row">Portable build</th><td class="cmp-y">✓ Windows</td><td class="cmp-q">?</td><td class="cmp-q">?</td></tr>
+          <tr><th scope="row">Languages</th><td class="cmp-p">4</td><td class="cmp-p">86</td><td class="cmp-q">?</td></tr>
+          <tr><th scope="row">Large file speed</th><td class="cmp-q">Not measured</td><td class="cmp-p">Author benchmark vs IDM published</td><td class="cmp-q">?</td></tr>
+          <tr><th scope="row">Many small files</th><td class="cmp-q">Not measured</td><td class="cmp-q">?</td><td class="cmp-q">?</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="cmp-note">Speed: not measured yet; we will publish a reproducible benchmark. Mister Download Manager is a Rust app with a speed benchmark against IDM published by its authors; we have not reproduced it.</p>
   </section>
 
   <section class="section wrap faq" id="faq">
