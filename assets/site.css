@@ -144,19 +144,20 @@ h1 em,h2 em{font-style:normal;color:var(--cyan)}
 code{font:13px var(--mono);background:#060a0e;border:1px solid var(--line);padding:2px 6px;border-radius:5px;color:#bfe9fb;word-break:break-word}
 
 /* Download picker */
-.dl{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:56px;align-items:start}
+.dl{display:grid;grid-template-columns:minmax(0,1fr);gap:36px;align-items:start}
+.dl-copy{max-width:720px}
 .dl-copy>p{color:var(--muted)}
 .help{display:flex;gap:12px;margin-top:26px;padding:16px;border:1px solid var(--line);border-radius:12px;color:#c6d1db;font-size:14px}
 .help svg{color:var(--cyan);margin-top:2px}
 .picker{border:1px solid var(--line2);border-radius:18px;background:#0f171f;padding:26px;box-shadow:0 30px 70px #0006}
-.picker fieldset{border:0;padding:0;margin:0;display:grid;gap:10px}
-.opt{position:relative;display:flex;align-items:center;gap:14px;padding:15px 16px;border:1px solid var(--line2);border-radius:11px;background:#0b1218;cursor:pointer;transition:border-color .2s,background .2s}
+.picker fieldset{border:0;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.opt{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:12px;padding:18px 16px;border:1px solid var(--line2);border-radius:11px;background:#0b1218;cursor:pointer;transition:border-color .2s,background .2s}
 .opt:hover{border-color:#64d9ff66}
 .opt input{position:absolute;opacity:0;width:1px;height:1px}
 .opt:has(input:checked){border-color:var(--cyan);background:#64d9ff0d}
 .opt:has(input:focus-visible){outline:2px solid var(--cyan);outline-offset:3px}
 .opt .os{display:grid;place-items:center;width:36px;height:36px;border-radius:9px;background:#151f29;color:var(--cyan)}
-.opt .txt{flex:1;min-width:0}
+.opt .txt{flex:1;min-width:0;width:100%}
 .opt strong{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:15px;font-weight:600}
 .opt .txt>span{display:block;font-size:13px;color:var(--muted)}
 .opt .size{font:13px var(--mono);color:#b9c6d2;white-space:nowrap}
@@ -254,6 +255,7 @@ dialog img{border-radius:8px;margin:auto;max-height:80svh;width:auto}
   .brand{font-size:16px}
   .grid{grid-template-columns:1fr}
   .picker{padding:18px 14px}
+  .picker fieldset{grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
   .opt{padding:13px 12px;gap:10px}
   .opt .os{width:30px;height:30px}
   .mobile-nav{padding-inline:18px}
