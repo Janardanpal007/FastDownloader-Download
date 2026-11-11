@@ -15,7 +15,11 @@
     appimage: /\.appimage$/i,
     deb: /\.deb$/i,
     'ext-chrome': /extension-chrome.*\.zip$/i,
-    'ext-firefox': /extension-firefox.*\.(zip|xpi)$/i
+    'ext-firefox': /extension-firefox.*\.(zip|xpi)$/i,
+    'android-arm64': /^FastDownloader-.*-android-arm64\.apk$/i,
+    'android-arm': /^FastDownloader-.*-android-arm\.apk$/i,
+    'android-x86_64': /^FastDownloader-.*-android-x86_64\.apk$/i,
+    'android-universal': /^FastDownloader-.*-android-universal\.apk$/i
   };
   var OS_NAMES = { windows: 'Windows', mac: 'macOS', linux: 'Linux' };
   var DEFAULT_PICK = { windows: 'windows', mac: 'mac-arm', linux: 'appimage' };
