@@ -1,7 +1,7 @@
 // FastDownloader download page.
 // - Finds each system's newest file in the GitHub releases (Android-only releases are skipped per file type),
 //   and fills in links, sizes, version and SHA-256 digests. Without JS or the API, the links in the HTML
-//   already point at the v1.3.0 files.
+//   already point at the v1.5.0 files.
 // - Points the main button at the visitor's system, drives the 3D laptop tour, the picker and install tabs.
 (function () {
   'use strict';
@@ -278,5 +278,5 @@
   fetch('https://api.github.com/repos/' + REPO + '/releases?per_page=30', { headers: { Accept: 'application/vnd.github+json' } })
     .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error('GitHub API ' + r.status)); })
     .then(applyReleases)
-    .catch(function () { /* Offline or rate-limited: the v1.3.0 links already in the HTML still work. */ });
+    .catch(function () { /* Offline or rate-limited: the v1.5.0 links already in the HTML still work. */ });
 })();
